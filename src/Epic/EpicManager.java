@@ -120,6 +120,28 @@ public class EpicManager {
         epic.updateEpicStatus(subtasks);
 
         return subtaskInfo;
+    }
+
+    public void printAllSubtasks() {
+
+        if (subtasks.isEmpty())
+            System.out.println("Список подзадач пуст.");
+
+        for (int id : subtasks.keySet()) {
+            SubtaskInfo value = subtasks.get(id);
+            System.out.println("№" + id + " " + value);
+        }
+
+    }
+    public void printAllEpics() {
+
+        if (epics.isEmpty())
+            System.out.println("Список эпиков пуст.");
+
+        for (int id : epics.keySet()) {
+            EpicInfo value = epics.get(id);
+            System.out.println("№" + id + " " + value);
+        }
 
     }
 }

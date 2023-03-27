@@ -48,5 +48,16 @@ public class TaskManager {
         return taskInfo;                                   // получаем ее ID, записываем на эту же позицию этот же метод.
     }                                                      // В каких случаях это нужно будет...пока не понимаю.
 
+    public void printAllTasks() {
+
+        if (tasks.isEmpty())
+            System.out.println("Список задач пуст.");
+
+        for (int id : tasks.keySet()) {
+            TaskInfo value = tasks.get(id);
+            System.out.println("№" + id + " " + value);
+        }
+
+    }
 }
 

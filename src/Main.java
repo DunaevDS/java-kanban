@@ -12,10 +12,10 @@ public class Main {
 
     public static void main(String[] args) {            // Добрый день, ниже тесты. В SubtaskManager к Вам расписал вопрос.
                                                         // На данном ревью хочу получить обратную связь по дальнейшему пути, код приберу ко второму ревью.
-        /*TaskManager taskManager = new TaskManager();  // Ожидаю миллион ошибок :)
+        TaskManager taskManager = new TaskManager();  // Ожидаю миллион ошибок :)
         EpicManager epicManager = new EpicManager();
 
-        TaskInfo task1 = taskManager.createTask(taskManager.newTask());                    // Создаем задачи
+        /*TaskInfo task1 = taskManager.createTask(taskManager.newTask());                    // Создаем задачи
         TaskInfo task2 = taskManager.createTask(taskManager.newTask());
 
         HashMap<Integer, TaskInfo> returnedTasks = taskManager.getAllTasks();            // получаем все задачи
@@ -23,6 +23,7 @@ public class Main {
         TaskInfo getSingleTask = taskManager.getSingleTask(1);                          // получаем задачу по нужному ID
         taskManager.deleteSingleTask(2);                                               // удаляем одну задачу
         TaskInfo updateTask = taskManager.updateSingleTask(task1);                       // обновляем задачу
+        taskManager.printAllTasks();                                                    // принт задач
         taskManager.deleteAllTasks();*/                                                 // удаляем задачи
 
 
@@ -30,8 +31,10 @@ public class Main {
         /*EpicInfo epic1 = epicManager.createEpic(epicManager.newEpic());              // создаем эпик
         HashMap<Integer, EpicInfo> returnedEpics = epicManager.getAllEpics();        // получаем все эпики
         EpicInfo singleEpic = epicManager.getSingleEpic(3);                          // получаем эпик
-        SubtaskInfo createSubtask1 = epicManager.createSubtask(epicManager.newSubtask(epic1));   // создаем сабтаск
+        SubtaskInfo createSubtask1 = epicManager.createSubtask(epicManager.newSubtask(epic1));   // создаем сабтаски
         SubtaskInfo createSubtask2 = epicManager.createSubtask(epicManager.newSubtask(epic1));
+        epicManager.printAllEpics();                                                 // принт эпиков
+        epicManager.printAllSubtasks();                                              // принт подзадач
         epicManager.deleteSingleEpic(3);
         epicManager.deleteAllEpics();*/                                                // удаляем эпики
 
