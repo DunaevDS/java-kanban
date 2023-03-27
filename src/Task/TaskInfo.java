@@ -17,16 +17,8 @@ public class TaskInfo {
         this.status = Status.NEW;
     }
 
-    public TaskInfo(int taskId, String name, String description, Status status) {
-        this.taskId = taskId;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
-
     public TaskInfo() {
     }
-
 
     public int getTaskId() {
         return taskId;

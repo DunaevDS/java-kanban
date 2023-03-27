@@ -6,7 +6,7 @@ import enums.Type;
 public class SubtaskInfo extends TaskInfo {
 
 
-    int epicID;
+    private final int epicID;
 
     public SubtaskInfo(String name, String description, int epicID) {
         super(name, description);
@@ -17,4 +17,5 @@ public class SubtaskInfo extends TaskInfo {
     public int getEpicID() {
         return epicID;
     }
+
 }

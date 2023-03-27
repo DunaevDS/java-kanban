@@ -10,45 +10,46 @@ import java.util.HashMap;
 
 public class EpicInfo extends TaskInfo {
 
-    public ArrayList<Integer> subtasks;
+    public static ArrayList<Integer> subs;
 
     public EpicInfo(String name, String description, Type type) {
         super(name, description);
         this.type = Type.EPIC;
-        this.subtasks = new ArrayList<>();
+        subs = new ArrayList<>();
     }
 
-
-    public ArrayList<Integer> getSubtasks() {
-        return subtasks;
+    public ArrayList<Integer> getSubs() {
+        return subs;
     }
 
     public void addSubtask(SubtaskInfo subtask) {
-        subtasks.add(subtask.getTaskId());
+        subs.add(subtask.getTaskId());
     }
 
-    public void updateEpicStatus(HashMap<Integer, SubtaskInfo> subtasks) { // изначально сделал этот метод
-                                                                           // в EpicManager, потом решил перенести сюда.
+    public void updateEpicStatus(HashMap<Integer, SubtaskInfo> subtasks) {
+
         int counterNew = 0;
         int counterDone = 0;
 
-        for (var id : getSubtasks()) {
+
+        for (int id : getSubs()) {
+
             SubtaskInfo subtask = subtasks.get(id);
+
             if (subtask.getStatus() == Status.NEW)
                 counterNew += 1;
             if (subtask.getStatus() == Status.DONE)
                 counterDone += 1;
         }
-        if (getSubtasks().size() == counterNew) {
+        if (getSubs().size() == counterNew) {
             setStatus(Status.NEW);
             return;
-        } else if (getSubtasks().size() == counterDone) {
+        } else if (getSubs().size() == counterDone) {
             setStatus(Status.DONE);
             return;
         }
         setStatus(Status.IN_PROGRESS);
 
     }
-
 }
 
