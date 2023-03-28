@@ -5,17 +5,13 @@ import model.Subtask;
 import model.Task;
 import model.enums.Status;
 import model.enums.Type;
-
-
 import java.util.*;
 
 public class TaskManager {
-    private static int id;
-
-    HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    public HashMap<Integer, Epic> epics = new HashMap<>();
-    protected HashMap<Integer, Task> tasks = new HashMap<>();
-
+    private int id;
+    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
 
     public int getNextID() {
         return ++id;
@@ -225,7 +221,6 @@ public class TaskManager {
         epic.setStatus(Status.IN_PROGRESS);
 
     }
-
 
 }
 

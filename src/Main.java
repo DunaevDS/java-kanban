@@ -14,16 +14,17 @@ public class Main {
 
         TaskManager taskManager = new TaskManager();
 
-        model.Task task1 = taskManager.createTask(taskManager.newTask());                    // Создаем задачи
+        /*model.Task task1 = taskManager.createTask(taskManager.newTask());                    // Создаем задачи
         model.Task task2 = taskManager.createTask(taskManager.newTask());
-
+        model.Task task3 = taskManager.createTask(taskManager.newTask());
+        model.Task task4 = taskManager.createTask(taskManager.newTask());
         var returnedTasks = taskManager.getAllTasks();            // получаем все задачи
 
         model.Task getSingleTask = taskManager.getSingleTask(1);                          // получаем задачу по нужному ID
         taskManager.deleteSingleTask(2);                                               // удаляем одну задачу
         model.Task updateTask = taskManager.updateSingleTask(task1);                       // обновляем задачу
         taskManager.printAllTasks();                                                    // принт задач
-        taskManager.deleteAllTasks();                                                 // удаляем задачи
+        taskManager.deleteAllTasks();*/                                                 // удаляем задачи
 
 
 

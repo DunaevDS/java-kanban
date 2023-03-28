@@ -17,7 +17,6 @@ public class Task {
         this.status = Status.NEW;
     }
 
-
     public int getTaskId() {
         return taskId;
     }
