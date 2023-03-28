@@ -4,8 +4,8 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
-import model.enums.Type;
-import java.util.*;
+
+import java.util.HashMap;
 
 public class TaskManager {
     private int id;
@@ -13,75 +13,63 @@ public class TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
 
-    public int getNextID() {
+    public int getNextId() {
         return ++id;
     }
 
     public Task newTask() {
-        return new Task("Task1", "Description_task1");
+        return new Task("Task1", "Description_task1", getNextId(), Status.NEW);
     }
 
     public Epic newEpic() {
-
-        return new Epic("Epic1", "Description_epic1", Type.EPIC);
+        return new Epic("Epic1", "Description_epic1", getNextId(), Status.NEW);
 
     }
 
     public Subtask newSubtask(Epic epic) {
-        return new Subtask("Subtask1", "Subtask1", epic.getTaskId());
+        return new Subtask("Subtask1", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
     }
 
     public Task createTask(Task task) {
-
-        task.setTaskId(getNextID());
         tasks.put(task.getTaskId(), task);
-
         return task;
     }
 
     public Epic createEpic(Epic epic) {
-
-        epic.setTaskId(getNextID());
         epics.put(epic.getTaskId(), epic);
-
         return epic;
     }
 
     public Subtask createSubtask(Subtask subtask) {
-
-        subtask.setTaskId(getNextID());
         subtasks.put(subtask.getTaskId(), subtask);
-
         Epic epic = epics.get(subtask.getEpicID());
-
-        epic.addSubtask(subtask);
+        epic.addSubtask(subtask.getTaskId());
         updateEpicStatus(subtask.getEpicID());
-
         return subtask;
     }
 
     public HashMap<Integer, Task> getAllTasks() {
-        if (!tasks.isEmpty()) return tasks;
-        else {
+        if (tasks.isEmpty()) {
             System.out.println("No tasks");
             return null;
         }
+        return tasks;
     }
 
     public HashMap<Integer, Epic> getAllEpics() {
-        if (!epics.isEmpty()) return epics;
-        else {
+        if (epics.isEmpty()) {
             System.out.println("No epics");
             return null;
         }
+        return epics;
     }
 
     public HashMap<Integer, Subtask> getAllSubtasks() {
-        if (!subtasks.isEmpty()) return subtasks;
-        else {
+        if (subtasks.isEmpty()) {
             System.out.println("No subtasks");
             return null;
         }
+        return subtasks;
     }
 
     public void deleteAllTasks() {

@@ -10,11 +10,17 @@ public class Task {
     protected Status status;
     protected Type type;
 
-    public Task(String name, String description) {
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    public Task(String name, String description, int taskId, Status status) {
         this.name = name;
         this.description = description;
         this.type = Type.TASK;
-        this.status = Status.NEW;
+        this.status = status;
+        this.taskId = taskId;
     }
 
     public int getTaskId() {
@@ -55,5 +61,16 @@ public class Task {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                '}';
     }
 }
