@@ -1,24 +1,22 @@
-package Task;
+package model;
 
-import enums.Status;
-import enums.Type;
+import model.enums.Status;
+import model.enums.Type;
 
-public class TaskInfo {
+public class Task {
     protected int taskId;
     protected String name;
     protected String description;
     protected Status status;
     protected Type type;
 
-    public TaskInfo(String name, String description) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.type = Type.TASK;
         this.status = Status.NEW;
     }
 
-    public TaskInfo() {
-    }
 
     public int getTaskId() {
         return taskId;

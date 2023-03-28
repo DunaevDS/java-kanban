@@ -1,14 +1,13 @@
-package Subtask;
+package model;
 
-import Task.TaskInfo;
-import enums.Type;
+import model.enums.Type;
 
-public class SubtaskInfo extends TaskInfo {
+public class Subtask extends Task {
 
 
     private final int epicID;
 
-    public SubtaskInfo(String name, String description, int epicID) {
+    public Subtask(String name, String description, int epicID) {
         super(name, description);
         this.epicID = epicID;
         this.type = Type.SUBTASK;
@@ -17,5 +16,6 @@ public class SubtaskInfo extends TaskInfo {
     public int getEpicID() {
         return epicID;
     }
+
 
 }
