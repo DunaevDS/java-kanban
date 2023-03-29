@@ -130,7 +130,7 @@ public class TaskManager {
         if (subtask == null) return;
 
         Epic epic = epics.get(subtask.getEpicId());
-        epic.removeSubtask(id);     // немного не понял зачем нужно было так сделать...ради структурирования кода?
+        epic.removeSubtask(id);
         subtasks.remove(id);
 
         updateEpicStatus(subtask.getEpicId());
@@ -144,7 +144,7 @@ public class TaskManager {
         Epic singleEpic = epics.get(id);
         if (singleEpic != null) return singleEpic;
         else {
-            System.out.println("Задачи с такой ID не существует");
+            System.out.println(ANSI_RED + "------> No Epic <------" + ANSI_RESET);
             return null;
         }
     }
@@ -158,14 +158,13 @@ public class TaskManager {
         return task;
     }
 
-    public Epic updateSingleEpic(Epic updatedEpic) {
+    public Epic updateSingleEpic(Epic epic) {
 
-        Epic oldEpic = epics.get(updatedEpic.getTaskId());
+        epics.put(epic.getTaskId(), epic);
 
-        oldEpic.updateEpic(updatedEpic);
-        epics.put(updatedEpic.getTaskId(), oldEpic);
-        updateEpicStatus(oldEpic.getTaskId());
-        return oldEpic;
+        updateEpicStatus(epic.getTaskId());
+
+        return epic;
     }
 
     public Subtask updateSingleSubtask(Subtask subtask) {

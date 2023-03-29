@@ -27,7 +27,7 @@ public class Epic extends Task {
     }
 
     public void removeSubtask(int id) {
-        subs.remove((Integer) id);
+        subs.remove(id);
     }
 
     public void removeAllSubtasks() {
@@ -36,11 +36,6 @@ public class Epic extends Task {
 
     public void updateSubtask(int id) {
         subs.set(subs.indexOf(id), id);
-    }
-
-    public void updateEpic(Epic epic){
-        setName(epic.getName());        // сделать проверку у сеттера
-        setDescription(epic.getDescription());
     }
 
     @Override
