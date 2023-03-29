@@ -2,13 +2,17 @@ package model;
 
 import model.enums.Status;
 import model.enums.Type;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
     private final ArrayList<Integer> subs;
 
-    public Epic(String name, String description, int id, Status status) {
+    public Epic(String name,
+                String description,
+                int id,
+                Status status) {
         super(name, description, id, status);
         this.type = Type.EPIC;
         this.subs = new ArrayList<>();
@@ -20,6 +24,18 @@ public class Epic extends Task {
 
     public void addSubtask(int id) {
         subs.add(id);
+    }
+
+    public void removeSubtask(int id) {
+        subs.remove((Integer) id);
+    }
+
+    public void removeAllSubtasks() {
+        subs.clear();
+    }
+
+    public void updateSubtask(int id) {
+        subs.set(subs.indexOf(id), id);
     }
 
     @Override

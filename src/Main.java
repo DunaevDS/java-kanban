@@ -4,9 +4,6 @@ import model.Epic;
 import model.Subtask;
 import model.enums.Status;
 
-import managers.TaskManager;
-
-import java.util.HashMap;
 
 public class Main {
 
@@ -62,12 +59,15 @@ public class Main {
         epic = taskManager.updateSingleEpic(epic);*/                                  // статус эпика меняется на DONE
 
         Task task1 = taskManager.createTask(taskManager.newTask());
+
         Epic epic = taskManager.createEpic(taskManager.newEpic());
         Subtask Subtask1 = taskManager.createSubtask(taskManager.newSubtask(epic));
         Subtask Subtask2 = taskManager.createSubtask(taskManager.newSubtask(epic));
-        taskManager.printAllTasks();
-        taskManager.printAllEpics();
-        taskManager.printAllSubtasks();
+
+        Epic epic2 = taskManager.createEpic(taskManager.newEpic());
+        Subtask Subtask3 = taskManager.createSubtask(taskManager.newSubtask(epic2));
+        Subtask Subtask4 = taskManager.createSubtask(taskManager.newSubtask(epic2));
+        Subtask updatedSubtask = taskManager.updateSingleSubtask(Subtask1);   // обновили сабтаск
 
     }
 

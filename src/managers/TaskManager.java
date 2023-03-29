@@ -13,6 +13,9 @@ public class TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
 
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
+
     public int getNextId() {
         return ++id;
     }
@@ -42,9 +45,9 @@ public class TaskManager {
 
     public Subtask createSubtask(Subtask subtask) {
         subtasks.put(subtask.getTaskId(), subtask);
-        Epic epic = epics.get(subtask.getEpicID());
+        Epic epic = epics.get(subtask.getEpicId());
         epic.addSubtask(subtask.getTaskId());
-        updateEpicStatus(subtask.getEpicID());
+        updateEpicStatus(subtask.getEpicId());
         return subtask;
     }
 
@@ -77,10 +80,15 @@ public class TaskManager {
     }
 
     public void deleteAllEpics() {
+        subtasks.clear();
         epics.clear();
     }
 
     public void deleteAllSubtasks() {
+        for (int value : epics.keySet()) {
+            Epic epic = epics.get(value);
+            epic.removeAllSubtasks();
+        }
         subtasks.clear();
     }
 
@@ -91,8 +99,7 @@ public class TaskManager {
     public void deleteSingleEpic(int epicID) {
         Epic epic = epics.get(epicID);
 
-        if (epic == null)
-            return;
+        if (epic == null) return;
 
         for (Integer id : epic.getSubs()) {
             subtasks.remove(id);
@@ -105,12 +112,11 @@ public class TaskManager {
 
         if (subtask == null) return;
 
-        Epic epic = epics.get(subtask.getEpicID());
-        epic.getSubs().remove((Integer) (id));
-        epics.put(epic.getTaskId(), epic);
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.removeSubtask(id);     // немного не понял зачем нужно было так сделать...ради структурирования кода?
         subtasks.remove(id);
 
-        updateEpicStatus(subtask.getEpicID());
+        updateEpicStatus(subtask.getEpicId());
     }
 
     public Task getSingleTask(int id) {
@@ -141,16 +147,16 @@ public class TaskManager {
         return epic;
     }
 
-    public Subtask updateSingleSubtask(Subtask subtask) {
+    public Subtask updateSingleSubtask(Subtask subtask) {       // лучше передавать объект или id ?
         subtasks.put(subtask.getTaskId(), subtask);
-        Epic epic = epics.get(subtask.getEpicID());
-        updateEpicStatus(subtask.getEpicID());
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.updateSubtask(subtask.getTaskId());
+        updateEpicStatus(subtask.getEpicId());
         return subtask;
     }
 
     public void printAllTasks() {
-        if (tasks.isEmpty())
-            System.out.println("Список задач пуст.");
+        if (tasks.isEmpty()) System.out.println("Список задач пуст.");
 
         for (int id : tasks.keySet()) {
             Task value = tasks.get(id);
@@ -160,8 +166,7 @@ public class TaskManager {
 
     public void printAllEpics() {
 
-        if (epics.isEmpty())
-            System.out.println("Список эпиков пуст.");
+        if (epics.isEmpty()) System.out.println("Список эпиков пуст.");
 
         for (int id : epics.keySet()) {
             Epic value = epics.get(id);
@@ -171,8 +176,7 @@ public class TaskManager {
 
     public void printAllSubtasks() {
 
-        if (subtasks.isEmpty())
-            System.out.println("Список подзадач пуст.");
+        if (subtasks.isEmpty()) System.out.println("Список подзадач пуст.");
 
         for (int id : subtasks.keySet()) {
             Subtask value = subtasks.get(id);
@@ -181,34 +185,31 @@ public class TaskManager {
 
     }
 
-    public void updateEpicStatus(int id) {
+    private void updateEpicStatus(int id) {
 
         Epic epic = epics.get(id);
+        if (epic == null) {
+            throw new NullPointerException(ANSI_RED + "Epic is null" + ANSI_RESET);
+        } else {
+            int counterNew = 0;
+            int counterDone = 0;
 
+            for (int value : epic.getSubs()) {
 
-        int counterNew = 0;
-        int counterDone = 0;
+                Subtask subtask = subtasks.get(value);
 
-
-        for (int value : epic.getSubs()) {
-
-            Subtask subtask = subtasks.get(value);
-
-            if (subtask.getStatus() == Status.NEW)
-                counterNew++;
-            if (subtask.getStatus() == Status.DONE)
-                counterDone++;
+                if (subtask.getStatus() == Status.NEW) counterNew++;
+                if (subtask.getStatus() == Status.DONE) counterDone++;
+            }
+            if (epic.getSubs().size() == counterNew) {
+                epic.setStatus(Status.NEW);
+                return;
+            } else if (epic.getSubs().size() == counterDone) {
+                epic.setStatus(Status.DONE);
+                return;
+            }
+            epic.setStatus(Status.IN_PROGRESS);
         }
-        if (epic.getSubs().size() == counterNew) {
-            epic.setStatus(Status.NEW);
-            return;
-        } else if (epic.getSubs().size() == counterDone) {
-            epic.setStatus(Status.DONE);
-            return;
-        }
-        epic.setStatus(Status.IN_PROGRESS);
-
     }
-
 }
 

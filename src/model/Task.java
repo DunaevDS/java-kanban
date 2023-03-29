@@ -3,6 +3,8 @@ package model;
 import model.enums.Status;
 import model.enums.Type;
 
+import java.time.Instant;
+
 public class Task {
     protected int taskId;
     protected String name;
@@ -10,12 +12,10 @@ public class Task {
     protected Status status;
     protected Type type;
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    public Task(String name, String description, int taskId, Status status) {
+    public Task(String name,
+                String description,
+                int taskId,
+                Status status) {
         this.name = name;
         this.description = description;
         this.type = Type.TASK;

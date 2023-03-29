@@ -3,19 +3,26 @@ package model;
 import model.enums.Status;
 import model.enums.Type;
 
+import java.time.Instant;
+
 public class Subtask extends Task {
 
-    private final int epicID;
+    private final int epicId;
 
-    public Subtask(String name, String description, int epicId, int taskId, Status status) {
+    public Subtask(String name,
+                   String description,
+                   int epicId,
+                   int taskId,
+                   Status status) {
         super(name, description, taskId, status);
-        this.epicID = epicId;
+        this.epicId = epicId;
         this.type = Type.SUBTASK;
     }
 
-    public int getEpicID() {
-        return epicID;
+    public int getEpicId() {
+        return epicId;
     }
+
 
     @Override
     public String toString() {
@@ -28,7 +35,6 @@ public class Subtask extends Task {
                 '}';
     }
 
-// вы отметили что у меня отсутствуют методы по удалению 1 сабтаски и всех сабтасок...но они у меня в TaskManager
-    // на строках 83 и 103 под названиями deleteSingleSubtask и deleteAllSubtask
+
 
 }
