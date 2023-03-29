@@ -38,6 +38,11 @@ public class Epic extends Task {
         subs.set(subs.indexOf(id), id);
     }
 
+    public void updateEpic(Epic epic){
+        setName(epic.getName());        // сделать проверку у сеттера
+        setDescription(epic.getDescription());
+    }
+
     @Override
     public String toString() {
         return "Epic{" +

@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 import model.enums.Status;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
@@ -51,28 +52,44 @@ public class TaskManager {
         return subtask;
     }
 
-    public HashMap<Integer, Task> getAllTasks() {
+    public ArrayList<Task> getAllTasks() {
+        ArrayList<Task> printTasks = new ArrayList<>();
         if (tasks.isEmpty()) {
-            System.out.println("No tasks");
+            System.out.println(ANSI_RED + "------> No tasks <------" + ANSI_RESET);
             return null;
         }
-        return tasks;
+        for (int value : tasks.keySet()) {
+            Task task = tasks.get(value);
+            printTasks.add(task);
+        }
+        return printTasks;
     }
 
-    public HashMap<Integer, Epic> getAllEpics() {
+    public ArrayList<Epic> getAllEpics() {
+        ArrayList<Epic> printEpics = new ArrayList<>();
+
         if (epics.isEmpty()) {
-            System.out.println("No epics");
+            System.out.println(ANSI_RED + "------> No epics <------" + ANSI_RESET);
             return null;
         }
-        return epics;
+        for (int value : epics.keySet()) {
+            Epic epic = epics.get(value);
+            printEpics.add(epic);
+        }
+        return printEpics;
     }
 
-    public HashMap<Integer, Subtask> getAllSubtasks() {
+    public ArrayList<Subtask> getAllSubtasks() {
+        ArrayList<Subtask> printSubtasks = new ArrayList<>();
         if (subtasks.isEmpty()) {
-            System.out.println("No subtasks");
+            System.out.println(ANSI_RED + "------> No subtasks <------" + ANSI_RESET);
             return null;
         }
-        return subtasks;
+        for (int value : subtasks.keySet()) {
+            Subtask subtask = subtasks.get(value);
+            printSubtasks.add(subtask);
+        }
+        return printSubtasks;
     }
 
     public void deleteAllTasks() {
@@ -141,13 +158,17 @@ public class TaskManager {
         return task;
     }
 
-    public Epic updateSingleEpic(Epic epic) {
-        epics.put(epic.getTaskId(), epic);
-        updateEpicStatus(epic.getTaskId());
-        return epic;
+    public Epic updateSingleEpic(Epic updatedEpic) {
+
+        Epic oldEpic = epics.get(updatedEpic.getTaskId());
+
+        oldEpic.updateEpic(updatedEpic);
+        epics.put(updatedEpic.getTaskId(), oldEpic);
+        updateEpicStatus(oldEpic.getTaskId());
+        return oldEpic;
     }
 
-    public Subtask updateSingleSubtask(Subtask subtask) {       // лучше передавать объект или id ?
+    public Subtask updateSingleSubtask(Subtask subtask) {
         subtasks.put(subtask.getTaskId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         epic.updateSubtask(subtask.getTaskId());
@@ -156,7 +177,10 @@ public class TaskManager {
     }
 
     public void printAllTasks() {
-        if (tasks.isEmpty()) System.out.println("Список задач пуст.");
+        if (tasks.isEmpty()) {
+            System.out.println("Список задач пуст.");
+            return;
+        }
 
         for (int id : tasks.keySet()) {
             Task value = tasks.get(id);
@@ -166,7 +190,10 @@ public class TaskManager {
 
     public void printAllEpics() {
 
-        if (epics.isEmpty()) System.out.println("Список эпиков пуст.");
+        if (epics.isEmpty()) {
+            System.out.println("Список эпиков пуст.");
+            return;
+        }
 
         for (int id : epics.keySet()) {
             Epic value = epics.get(id);
@@ -176,7 +203,10 @@ public class TaskManager {
 
     public void printAllSubtasks() {
 
-        if (subtasks.isEmpty()) System.out.println("Список подзадач пуст.");
+        if (subtasks.isEmpty()) {
+            System.out.println("Список подзадач пуст.");
+            return;
+        }
 
         for (int id : subtasks.keySet()) {
             Subtask value = subtasks.get(id);

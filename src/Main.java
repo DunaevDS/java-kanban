@@ -59,15 +59,23 @@ public class Main {
         epic = taskManager.updateSingleEpic(epic);*/                                  // статус эпика меняется на DONE
 
         Task task1 = taskManager.createTask(taskManager.newTask());
+        Task task2 = taskManager.createTask(taskManager.newTask());
 
         Epic epic = taskManager.createEpic(taskManager.newEpic());
+        Epic epic2 = taskManager.createEpic(taskManager.newEpic());
+        epic2.setName("dwdwdwd");
         Subtask Subtask1 = taskManager.createSubtask(taskManager.newSubtask(epic));
         Subtask Subtask2 = taskManager.createSubtask(taskManager.newSubtask(epic));
+        var updatedEpic2 = taskManager.updateSingleEpic(epic2);
 
-        Epic epic2 = taskManager.createEpic(taskManager.newEpic());
+        /*Epic epic3 = taskManager.createEpic(taskManager.newEpic());
         Subtask Subtask3 = taskManager.createSubtask(taskManager.newSubtask(epic2));
         Subtask Subtask4 = taskManager.createSubtask(taskManager.newSubtask(epic2));
         Subtask updatedSubtask = taskManager.updateSingleSubtask(Subtask1);   // обновили сабтаск
+        var alltasks = taskManager.getAllTasks();
+        var allEpics = taskManager.getAllEpics();
+        var allsubs = taskManager.getAllSubtasks();*/
+
 
     }
 
