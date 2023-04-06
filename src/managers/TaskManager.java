@@ -1,5 +1,4 @@
 package managers;
-
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -158,14 +157,10 @@ public class TaskManager {
         return task;
     }
 
-    public Epic updateSingleEpic(Epic updatedEpic) {
-
-        Epic oldEpic = epics.get(updatedEpic.getTaskId());
-
-        oldEpic.updateEpic(updatedEpic);
-        epics.put(updatedEpic.getTaskId(), oldEpic);
-        updateEpicStatus(oldEpic.getTaskId());
-        return oldEpic;
+    public Epic updateSingleEpic(Epic epic) {
+        epics.put(epic.getTaskId(), epic);
+        updateEpicStatus(epic.getTaskId());
+        return epic;
     }
 
     public Subtask updateSingleSubtask(Subtask subtask) {

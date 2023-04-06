@@ -4,7 +4,6 @@ import model.Epic;
 import model.Subtask;
 import model.enums.Status;
 
-
 public class Main {
 
     public static void main(String[] args) {
@@ -58,15 +57,6 @@ public class Main {
         Subtask2.setStatus(Status.DONE);
         epic = taskManager.updateSingleEpic(epic);*/                                  // статус эпика меняется на DONE
 
-        Task task1 = taskManager.createTask(taskManager.newTask());
-        Task task2 = taskManager.createTask(taskManager.newTask());
-
-        Epic epic = taskManager.createEpic(taskManager.newEpic());
-        Epic epic2 = taskManager.createEpic(taskManager.newEpic());
-        epic2.setName("dwdwdwd");
-        Subtask Subtask1 = taskManager.createSubtask(taskManager.newSubtask(epic));
-        Subtask Subtask2 = taskManager.createSubtask(taskManager.newSubtask(epic));
-        var updatedEpic2 = taskManager.updateSingleEpic(epic2);
 
         /*Epic epic3 = taskManager.createEpic(taskManager.newEpic());
         Subtask Subtask3 = taskManager.createSubtask(taskManager.newSubtask(epic2));
