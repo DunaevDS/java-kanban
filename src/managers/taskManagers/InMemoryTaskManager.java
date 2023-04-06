@@ -1,21 +1,33 @@
-package managers;
+package managers.taskManagers;
+
+import managers.Managers;
+import managers.historyManagers.HistoryManager;
+import managers.historyManagers.InMemoryHistoryManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
+    InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+
+    protected static HistoryManager historyManager = Managers.getDefaultHistory();
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
+
+
+/*    public void InMemoryTasksManager() {
+
+        historyManager = Managers.getDefaultHistory();
+
+    }*/
 
     public int getNextId() {
         return ++id;
@@ -30,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    public Subtask newSubtask( Epic epic) {
+    public Subtask newSubtask(Epic epic) {
         return new Subtask("Subtask1", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
     }
 
@@ -138,22 +150,39 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getSingleTask(int id) {
-        return tasks.get(id);
+        Task singleTask = tasks.get(id);
+        if (singleTask != null) {
+            historyManager.add(singleTask);
+            return singleTask;
+        } else {
+            System.out.println(ANSI_RED + "Task is null" + ANSI_RESET);
+            return null;
+        }
     }
 
     @Override
     public Epic getSingleEpic(int id) {
         Epic singleEpic = epics.get(id);
-        if (singleEpic != null) return singleEpic;
-        else {
-            System.out.println("Задачи с такой ID не существует");
+        if (singleEpic != null) {
+            historyManager.add(singleEpic);
+            return singleEpic;
+        } else {
+            System.out.println(ANSI_RED + "Epic is null" + ANSI_RESET);
             return null;
         }
     }
 
     @Override
     public Subtask getSingleSubtask(int id) {
-        return subtasks.get(id);
+        Subtask singleSubtask = subtasks.get(id);
+        if (singleSubtask != null) {
+
+            historyManager.add(singleSubtask);
+            return singleSubtask;
+        } else {
+            System.out.println(ANSI_RED + "Subtask is null" + ANSI_RESET);
+            return null;
+        }
     }
 
     @Override
@@ -221,7 +250,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void printHistory(){}
+    public List<Task> getHistory() {
+
+        return historyManager.getHistory();
+
+    }
 
     private void updateEpicStatus(int id) {
 

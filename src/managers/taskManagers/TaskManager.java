@@ -1,15 +1,17 @@
-package managers;
+package managers.taskManagers;
+
 import model.Epic;
 import model.Subtask;
 import model.Task;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface TaskManager {
 
     // создание задачи
-    Task createTask(Task task);  // создание задачи
+    Task createTask(Task task);
 
     // создание эпика
     Epic createEpic(Epic epic);
@@ -72,6 +74,6 @@ public interface TaskManager {
     void printAllSubtasks();
 
     // печать истории
-    void printHistory();
+    List<Task> getHistory();
 }
 
