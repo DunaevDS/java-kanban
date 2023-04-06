@@ -1,14 +1,10 @@
-import managers.TaskManager;
-import model.Task;
-import model.Epic;
-import model.Subtask;
-import model.enums.Status;
+import managers.InMemoryTaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
         /*Task task1 = taskManager.createTask(taskManager.newTask());                    // Создаем задачи
         Task task2 = taskManager.createTask(taskManager.newTask());
