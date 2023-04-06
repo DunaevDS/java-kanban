@@ -3,9 +3,9 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -30,7 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    public Subtask newSubtask(@NotNull Epic epic) {
+    public Subtask newSubtask( Epic epic) {
         return new Subtask("Subtask1", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
     }
 
@@ -56,46 +56,34 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public Collection<Task> getAllTasks() {
         ArrayList<Task> printTasks = new ArrayList<>();
         if (tasks.isEmpty()) {
             System.out.println(ANSI_RED + "------> No tasks <------" + ANSI_RESET);
             return null;
         }
-        for (int value : tasks.keySet()) {
-            Task task = tasks.get(value);
-            printTasks.add(task);
-        }
-        return printTasks;
+        return tasks.values();
     }
 
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public Collection<Epic> getAllEpics() {
         ArrayList<Epic> printEpics = new ArrayList<>();
 
         if (epics.isEmpty()) {
             System.out.println(ANSI_RED + "------> No epics <------" + ANSI_RESET);
             return null;
         }
-        for (int value : epics.keySet()) {
-            Epic epic = epics.get(value);
-            printEpics.add(epic);
-        }
-        return printEpics;
+        return epics.values();
     }
 
     @Override
-    public ArrayList<Subtask> getAllSubtasks() {
+    public Collection<Subtask> getAllSubtasks() {
         ArrayList<Subtask> printSubtasks = new ArrayList<>();
         if (subtasks.isEmpty()) {
             System.out.println(ANSI_RED + "------> No subtasks <------" + ANSI_RESET);
             return null;
         }
-        for (int value : subtasks.keySet()) {
-            Subtask subtask = subtasks.get(value);
-            printSubtasks.add(subtask);
-        }
-        return printSubtasks;
+        return subtasks.values();
     }
 
     @Override

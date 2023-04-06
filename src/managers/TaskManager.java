@@ -2,10 +2,9 @@ package managers;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import model.enums.Status;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 
 public interface TaskManager {
 
@@ -19,13 +18,13 @@ public interface TaskManager {
     Subtask createSubtask(Subtask subtask);
 
     // получение списка всех задач
-    ArrayList<Task> getAllTasks();
+    Collection<Task> getAllTasks();
 
     // получение списка всех эпиков
-    ArrayList<Epic> getAllEpics();
+    Collection<Epic> getAllEpics();
 
     // получение списка всех подзадач
-    ArrayList<Subtask> getAllSubtasks();
+    Collection<Subtask> getAllSubtasks();
 
     // удаление всех задач
     void deleteAllTasks();
