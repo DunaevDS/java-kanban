@@ -1,12 +1,11 @@
 package managers;
 
-import managers.historyManagers.HistoryManager;
-import managers.historyManagers.InMemoryHistoryManager;
-import managers.taskManagers.InMemoryTaskManager;
-import managers.taskManagers.TaskManager;
+import managers.historymanagers.HistoryManager;
+import managers.historymanagers.InMemoryHistoryManager;
+import managers.taskmanagers.InMemoryTaskManager;
+import managers.taskmanagers.TaskManager;
 
 public class Managers {
-
 
     public TaskManager getDefault() {           // пока что не понимаю зачем этот метод делается
         return new InMemoryTaskManager();

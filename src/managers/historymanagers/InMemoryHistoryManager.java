@@ -1,4 +1,4 @@
-package managers.historyManagers;
+package managers.historymanagers;
 
 import model.Task;
 
@@ -15,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        sizeCheck(task);
+        sizeCheck();
         history.add(task);
     }
 
@@ -24,7 +24,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history;
     }
 
-    private void sizeCheck(Task task) {
+    private void sizeCheck() {
         if (history.size() >= 10) {
             history.remove(0);
         }

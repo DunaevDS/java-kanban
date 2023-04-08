@@ -1,33 +1,25 @@
-package managers.taskManagers;
+package managers.taskmanagers;
 
 import managers.Managers;
-import managers.historyManagers.HistoryManager;
-import managers.historyManagers.InMemoryHistoryManager;
+import managers.historymanagers.HistoryManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
-    InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
-
-    protected static HistoryManager historyManager = Managers.getDefaultHistory();
-
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
-
-
-/*    public void InMemoryTasksManager() {
-
-        historyManager = Managers.getDefaultHistory();
-
-    }*/
 
     public int getNextId() {
         return ++id;
@@ -39,7 +31,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Epic newEpic() {
         return new Epic("Epic1", "Description_epic1", getNextId(), Status.NEW);
-
     }
 
     public Subtask newSubtask(Epic epic) {
@@ -187,24 +178,39 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task updateSingleTask(Task task) {
-        tasks.put(task.getTaskId(), task);
-        return task;
+        if (task == null) {
+            System.out.println(ANSI_RED + "Task is null" + ANSI_RESET);
+            return null;
+        } else {
+            tasks.put(task.getTaskId(), task);
+            return task;
+        }
     }
 
     @Override
     public Epic updateSingleEpic(Epic epic) {
-        epics.put(epic.getTaskId(), epic);
-        updateEpicStatus(epic.getTaskId());
-        return epic;
+        if (epic == null) {
+            System.out.println(ANSI_RED + "Epic is null" + ANSI_RESET);
+            return null;
+        } else {
+            epics.put(epic.getTaskId(), epic);
+            updateEpicStatus(epic.getTaskId());
+            return epic;
+        }
     }
 
     @Override
     public Subtask updateSingleSubtask(Subtask subtask) {
-        subtasks.put(subtask.getTaskId(), subtask);
-        Epic epic = epics.get(subtask.getEpicId());
-        epic.updateSubtask(subtask.getTaskId());
-        updateEpicStatus(subtask.getEpicId());
-        return subtask;
+        if (subtask == null) {
+            System.out.println(ANSI_RED + "Subtask is null" + ANSI_RESET);
+            return null;
+        } else {
+            subtasks.put(subtask.getTaskId(), subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+            epic.updateSubtask(subtask.getTaskId());
+            updateEpicStatus(subtask.getEpicId());
+            return subtask;
+        }
     }
 
     @Override
@@ -213,7 +219,6 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Список задач пуст.");
             return;
         }
-
         for (int id : tasks.keySet()) {
             Task value = tasks.get(id);
             System.out.println("№" + id + " " + value);
@@ -222,12 +227,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printAllEpics() {
-
         if (epics.isEmpty()) {
             System.out.println("Список эпиков пуст.");
             return;
         }
-
         for (int id : epics.keySet()) {
             Epic value = epics.get(id);
             System.out.println("№" + id + " " + value);
@@ -236,24 +239,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printAllSubtasks() {
-
         if (subtasks.isEmpty()) {
             System.out.println("Список подзадач пуст.");
             return;
         }
-
         for (int id : subtasks.keySet()) {
             Subtask value = subtasks.get(id);
             System.out.println("№" + id + " " + value);
         }
-
     }
 
     @Override
     public List<Task> getHistory() {
-
         return historyManager.getHistory();
-
     }
 
     private void updateEpicStatus(int id) {

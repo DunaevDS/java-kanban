@@ -1,4 +1,4 @@
-import managers.taskManagers.InMemoryTaskManager;
+import managers.taskmanagers.InMemoryTaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
