@@ -10,8 +10,6 @@ public class CustomLinkedList {
     private Node<Task> head;
     private Node<Task> tail;
 
-    private int size = 0;
-
     public Node<Task> linkLast(Task task) {
 
         final Node<Task> oldTail = tail;
@@ -22,7 +20,6 @@ public class CustomLinkedList {
             head = newNode;
         else
             oldTail.next = newNode;
-        size++;
 
         return newNode;
     }
