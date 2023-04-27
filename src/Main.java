@@ -9,76 +9,39 @@ public class Main {
 
         InMemoryTaskManager manager = new InMemoryTaskManager();
 
-        Task task1 = manager.createTask(manager.newTask());
-        Epic epic2 = manager.createEpic(manager.newEpic());
-        Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic2));
-        var returnedTasks = manager.getAllTasks();
+        Task task1 = manager.createTask(manager.newTask()); //id=1
+        Task task2 = manager.createTask(manager.newTask()); //id=2
+        Epic epic1 = manager.createEpic(manager.newEpic()); //id=3
+        Subtask Subtask1 = manager.createSubtask(manager.newSubtask(epic1)); //id=4
+        Subtask Subtask2 = manager.createSubtask(manager.newSubtask(epic1)); //id=5
+        Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic1)); //id=6
+        Epic epic2 = manager.createEpic(manager.newEpic()); //id=7
 
-        var getSingleTask = manager.getSingleTask(1);
-        var getEpic = manager.getSingleEpic(2);
-        var getSub = manager.getSingleSubtask(3);
-        manager.getSingleTask(1);                                   // проверяем что только 10 задач отображаются
+
+        manager.getSingleTask(1);
+        manager.getSingleTask(2);
         manager.getSingleTask(1);
         manager.getSingleTask(1);
-        manager.getSingleTask(1);
+        manager.getSingleEpic(3);
+        manager.getSingleEpic(3);
+        manager.getSingleEpic(3);
+
         var history1 = manager.getHistory();
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
 
+        manager.getSingleEpic(7);
+        manager.getSingleSubtask(4);
+        manager.getSingleSubtask(4);
+        manager.getSingleSubtask(5);
+        manager.getSingleSubtask(6);
 
-        /*manager.deleteSingleTask(2);
-        Task updateTask = manager.updateSingleTask(task1);
-        manager.printAllTasks();
-        manager.deleteAllTasks();*/
+        var history2 = manager.getHistory();
 
+        manager.deleteSingleTask(4);       //такой таски нету, в консоли вылезет ошибка
+        manager.deleteSingleTask(1);
+        manager.deleteSingleEpic(3);
 
+        var history3 = manager.getHistory();
 
-        /*Epic epic = manager.createEpic(manager.newEpic());              // создаем эпик
-        Epic epic2 = manager.createEpic(manager.newEpic());
-        Epic epic3 = manager.createEpic(manager.newEpic());
-        var returnedEpics = manager.getAllEpics();        // получаем все эпики
-        Subtask createSubtask1 = manager.createSubtask(manager.newSubtask(epic));   // создаем сабтаски
-        Subtask createSubtask2 = manager.createSubtask(manager.newSubtask(epic));
-        manager.printAllEpics();                                                 // принт эпиков
-        manager.printAllSubtasks();                                              // принт подзадач
-        manager.deleteSingleEpic(1);                                       // удаляем эпик, содержащий сабтаски
-        manager.deleteAllEpics();*/                                               // удаляем эпики
-
-
-
-        /*Epic epic = manager.createEpic(manager.newEpic());                           // создаем эпик и сабтаски для него
-        Subtask Subtask1 = manager.createSubtask(manager.newSubtask(epic));
-        Subtask Subtask2 = manager.createSubtask(manager.newSubtask(epic));
-        Subtask1.setStatus(Status.DONE);                                                        // меняем статус задачи
-        epic = manager.updateSingleEpic(epic);                                             // смотрим, что статус эпика меняется после обновления
-        Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic));     // здесь статус эпика меняется
-        Subtask getSingleSubtask = manager.getSingleSubtask(2);                 // получаем сабтаск
-        InMemoryTaskManager.deleteSingleSubtask(3);                                              // удаляем сабтаск
-        Subtask updatedSubtask = manager.updateSingleSubtask(Subtask1);          // обновляем сабтаск
-        manager.deleteAllSubtasks();*/
-
-
-        /*Epic epic = manager.createEpic(manager.newEpic());                        // создаем эпик и сабтаски для него
-        Subtask Subtask1 = manager.createSubtask(manager.newSubtask(epic));
-        Subtask Subtask2 = manager.createSubtask(manager.newSubtask(epic));
-        Subtask1.setStatus(Status.DONE);
-        epic = manager.updateSingleEpic(epic);
-        Subtask2.setStatus(Status.DONE);
-        epic = manager.updateSingleEpic(epic);*/                                  // статус эпика меняется на DONE
-
-
-        /*Epic epic3 = manager.createEpic(manager.newEpic());
-        Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic2));
-        Subtask Subtask4 = manager.createSubtask(manager.newSubtask(epic2));
-        Subtask updatedSubtask = manager.updateSingleSubtask(Subtask1);   // обновили сабтаск
-        var alltasks = manager.getAllTasks();
-        var allEpics = manager.getAllEpics();
-        var allsubs = manager.getAllSubtasks();*/
 
 
     }

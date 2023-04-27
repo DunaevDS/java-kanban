@@ -65,12 +65,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", type=" + type +
-                '}';
+        return String.format(
+                "Task { taskId: %s, name: %s, description: %s, status: %s, type: %s }",
+                taskId, name, description, status, type);
     }
 }

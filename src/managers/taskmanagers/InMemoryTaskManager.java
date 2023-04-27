@@ -26,15 +26,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public Task newTask() {
-        return new Task("Task1", "Description_task1", getNextId(), Status.NEW);
+        return new Task("Task", "Description_task1", getNextId(), Status.NEW);
     }
 
     public Epic newEpic() {
-        return new Epic("Epic1", "Description_epic1", getNextId(), Status.NEW);
+        return new Epic("Epic", "Description_epic1", getNextId(), Status.NEW);
     }
 
     public Subtask newSubtask(Epic epic) {
-        return new Subtask("Subtask1", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
+        return new Subtask("Subtask", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
     }
 
     @Override
@@ -111,30 +111,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSingleTask(int id) {
-        tasks.remove(id);
+        Task singleTask = tasks.get(id);
+        if (singleTask != null) {
+            tasks.remove(id);
+            historyManager.remove(id);
+        } else {
+            System.out.println(ANSI_RED + "Task ID="+ id +" is not existing" + ANSI_RESET);
+        }
     }
 
     @Override
     public void deleteSingleEpic(int epicID) {
         Epic epic = epics.get(epicID);
 
-        if (epic == null) return;
+        if (epic == null) {
+            System.out.println(ANSI_RED + "Epic ID="+epicID+" is not existing" + ANSI_RESET);
+            return;}
 
         for (Integer id : epic.getSubs()) {
             subtasks.remove(id);
+            historyManager.remove(id);
         }
         epics.remove(epicID);
+        historyManager.remove(epicID);
     }
 
     @Override
     public void deleteSingleSubtask(int id) {
         Subtask subtask = subtasks.get(id);
 
-        if (subtask == null) return;
+        if (subtask == null) {
+            System.out.println(ANSI_RED + "Subtask is already deleted" + ANSI_RESET);
+            return;}
 
         Epic epic = epics.get(subtask.getEpicId());
-        epic.removeSubtask(id);     // немного не понял зачем нужно было так сделать...ради структурирования кода?
+        epic.removeSubtask(id);
         subtasks.remove(id);
+        historyManager.remove(id);
 
         updateEpicStatus(subtask.getEpicId());
     }

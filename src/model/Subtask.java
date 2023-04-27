@@ -23,18 +23,11 @@ public class Subtask extends Task {
         return epicId;
     }
 
-
     @Override
     public String toString() {
-        return "Subtask{" +
-                "taskId=" + taskId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", type=" + type +
-                '}';
+        return String.format(
+                "SubTask { taskId: %s, name: %s, description: %s, status: %s, type: %s }",
+                taskId, name, description, status, type);
     }
 
-
-
-}
+    }
