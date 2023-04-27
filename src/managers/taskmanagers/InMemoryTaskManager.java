@@ -116,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(id);
             historyManager.remove(id);
         } else {
-            System.out.println(ANSI_RED + "Task ID="+ id +" is not existing" + ANSI_RESET);
+            System.out.println(ANSI_RED + "Task ID=" + id + " is not existing" + ANSI_RESET);
         }
     }
 
@@ -125,8 +125,9 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicID);
 
         if (epic == null) {
-            System.out.println(ANSI_RED + "Epic ID="+epicID+" is not existing" + ANSI_RESET);
-            return;}
+            System.out.println(ANSI_RED + "Epic ID=" + epicID + " is not existing" + ANSI_RESET);
+            return;
+        }
 
         for (Integer id : epic.getSubs()) {
             subtasks.remove(id);
@@ -141,8 +142,9 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
 
         if (subtask == null) {
-            System.out.println(ANSI_RED + "Subtask is already deleted" + ANSI_RESET);
-            return;}
+            System.out.println(ANSI_RED + "Subtask ID=" + id + " is already deleted" + ANSI_RESET);
+            return;
+        }
 
         Epic epic = epics.get(subtask.getEpicId());
         epic.removeSubtask(id);
