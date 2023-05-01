@@ -142,7 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
 
         if (subtask == null) {
-            System.out.println(ANSI_RED + "Subtask ID=" + id + " is already deleted" + ANSI_RESET);
+            System.out.println(ANSI_RED + "Subtask ID=" + id + " is not existing" + ANSI_RESET);
             return;
         }
 

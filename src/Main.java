@@ -9,16 +9,16 @@ public class Main {
 
         InMemoryTaskManager manager = new InMemoryTaskManager();
 
-        Task task1 = manager.createTask(manager.newTask()); //id=1
-        Task task2 = manager.createTask(manager.newTask()); //id=2
-        Epic epic1 = manager.createEpic(manager.newEpic()); //id=3
+        Task task1 = manager.createTask(manager.newTask());                  //id=1
+        Task task2 = manager.createTask(manager.newTask());                  //id=2
+        Epic epic1 = manager.createEpic(manager.newEpic());                  //id=3
         Subtask Subtask1 = manager.createSubtask(manager.newSubtask(epic1)); //id=4
         Subtask Subtask2 = manager.createSubtask(manager.newSubtask(epic1)); //id=5
         Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic1)); //id=6
-        Epic epic2 = manager.createEpic(manager.newEpic()); //id=7
-
+        Epic epic2 = manager.createEpic(manager.newEpic());                  //id=7
 
         manager.getSingleTask(1);
+        var history0 = manager.getHistory();
         manager.getSingleTask(2);
         manager.getSingleTask(1);
         manager.getSingleTask(1);
@@ -39,11 +39,10 @@ public class Main {
         manager.deleteSingleTask(4);       //такой таски нету, в консоли вылезет ошибка
         manager.deleteSingleTask(1);
         manager.deleteSingleEpic(3);
-
         var history3 = manager.getHistory();
+        manager.deleteSingleEpic(7);
 
-
-
+        var history4 = manager.getHistory();
     }
 
 

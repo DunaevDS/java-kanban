@@ -10,16 +10,19 @@ public class CustomLinkedList {
     private Node<Task> head;
     private Node<Task> tail;
 
+    private int size = 0;
+
     public Node<Task> linkLast(Task task) {
 
         final Node<Task> oldTail = tail;
         final Node<Task> newNode = new Node<>(oldTail, task, null);
         tail = newNode;
 
-        if (oldTail == null)
+        if (head == null)
             head = newNode;
         else
             oldTail.next = newNode;
+        size++;
 
         return newNode;
     }
@@ -35,18 +38,17 @@ public class CustomLinkedList {
         }
 
         return tasks;
-
     }
 
     public void removeNode(Node<Task> node) {
 
-        if (node == null)
+        if (node == null || size == 0)
             return;
 
         if (node.equals(head)) {
             head = node.next;
 
-            if (node.next != null)
+            if (head != null)
                 node.next.prev = null;
 
         } else {
@@ -54,7 +56,9 @@ public class CustomLinkedList {
 
             if (node.next != null)
                 node.next.prev = node.prev;
+            else tail = node.prev;
         }
+        size--;
     }
 
 }
