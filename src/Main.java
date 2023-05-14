@@ -1,48 +1,39 @@
+import managers.Managers;
+import managers.taskmanagers.FileBackedTasksManager;
 import managers.taskmanagers.InMemoryTaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import model.utils.DataTransformation;
+
+import java.nio.file.Path;
 
 public class Main {
 
     public static void main(String[] args) {
 
         InMemoryTaskManager manager = new InMemoryTaskManager();
+        FileBackedTasksManager fileManager = Managers.getDefaultFileBackedManager();
 
-        Task task1 = manager.createTask(manager.newTask());                  //id=1
-        Task task2 = manager.createTask(manager.newTask());                  //id=2
-        Epic epic1 = manager.createEpic(manager.newEpic());                  //id=3
-        Subtask Subtask1 = manager.createSubtask(manager.newSubtask(epic1)); //id=4
-        Subtask Subtask2 = manager.createSubtask(manager.newSubtask(epic1)); //id=5
-        Subtask Subtask3 = manager.createSubtask(manager.newSubtask(epic1)); //id=6
-        Epic epic2 = manager.createEpic(manager.newEpic());                  //id=7
+        Task task1 = fileManager.createTask(fileManager.newTask());                  //id=1
+        Task task2 = fileManager.createTask(fileManager.newTask());                  //id=2
+        Epic epic1 = fileManager.createEpic(fileManager.newEpic());                  //id=3
+        /*Subtask Subtask1 = fileManager.createSubtask(fileManager.newSubtask(epic1)); //id=4
+        Subtask Subtask2 = fileManager.createSubtask(fileManager.newSubtask(epic1)); //id=5
+        Subtask Subtask3 = fileManager.createSubtask(fileManager.newSubtask(epic1)); //id=6
+        Epic epic2 = fileManager.createEpic(fileManager.newEpic());                  //id=7*/
 
-        manager.getSingleTask(1);
-        var history0 = manager.getHistory();
-        manager.getSingleTask(2);
-        manager.getSingleTask(1);
-        manager.getSingleTask(1);
-        manager.getSingleEpic(3);
-        manager.getSingleEpic(3);
-        manager.getSingleEpic(3);
 
-        var history1 = manager.getHistory();
+        fileManager.getSingleTask(1);
+        fileManager.getSingleTask(2);
+        fileManager.getSingleEpic(3);
+        fileManager.getSingleTask(1);
+        fileManager.getSingleTask(1);
+        /*ileManager.getSingleSubtask(4);
+        fileManager.getSingleSubtask(5);*/
 
-        manager.getSingleEpic(7);
-        manager.getSingleSubtask(4);
-        manager.getSingleSubtask(4);
-        manager.getSingleSubtask(5);
-        manager.getSingleSubtask(6);
+        FileBackedTasksManager newFileManager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
 
-        var history2 = manager.getHistory();
-
-        manager.deleteSingleTask(4);       //такой таски нету, в консоли вылезет ошибка
-        manager.deleteSingleTask(1);
-        manager.deleteSingleEpic(3);
-        var history3 = manager.getHistory();
-        manager.deleteSingleEpic(7);
-
-        var history4 = manager.getHistory();
     }
 
 

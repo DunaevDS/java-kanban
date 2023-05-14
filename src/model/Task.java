@@ -3,8 +3,6 @@ package model;
 import model.enums.Status;
 import model.enums.Type;
 
-import java.time.Instant;
-
 public class Task {
     protected int taskId;
     protected String name;
@@ -21,6 +19,19 @@ public class Task {
         this.type = Type.TASK;
         this.status = status;
         this.taskId = taskId;
+    }
+
+    // конструктор для преобразования из строки
+    public Task(int id,
+                String type,
+                String name,
+                Status status,
+                String description) {
+        this.taskId = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.type = Type.TASK;
     }
 
     public int getTaskId() {
@@ -63,10 +74,29 @@ public class Task {
         this.type = type;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return String.format(
                 "Task { taskId: %s, name: %s, description: %s, status: %s, type: %s }",
                 taskId, name, description, status, type);
+    }*/
+
+    /*@Override
+    public String toString() {
+        return "Task {"
+                + "id: " + taskId
+                + ", title: '" + type + '\''
+                + ", description: '" + description + '\''
+                + ", status: " + status
+                + '}';
+    }*/
+    @Override
+    public  String toString(){
+        return  taskId
+                + ", " + type
+                + ", " + name
+                + ", " + status
+                + ", " + description
+                + ",";
     }
 }

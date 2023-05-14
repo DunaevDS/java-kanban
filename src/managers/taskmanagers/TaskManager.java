@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
@@ -74,5 +75,13 @@ public interface TaskManager {
 
     // печать истории
     List<Task> getHistory();
+
+    HashMap<Integer, Task> getTasks();
+
+    HashMap<Integer, Subtask> getSubtasks();
+
+    HashMap<Integer, Epic> getEpics();
+
+
 }
 
