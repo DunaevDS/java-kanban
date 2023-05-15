@@ -49,21 +49,14 @@ public class Epic extends Task {
         subs.set(subs.indexOf(id), id);
     }
 
-    /*@Override
-    public String toString() {
-        return String.format(
-                "Epic { taskId: %s, name: %s, description: %s, status: %s, type: %s }",
-                taskId, name, description, status, type);
-
-    }*/
     @Override
     public  String toString(){
         return  taskId
-                + ", " + type
-                + ", " + name
-                + ", " + status
-                + ", " + description
-                + ",";
+                + "," + type
+                + "," + name
+                + "," + status
+                + ",\"" + description
+                + "\",";
     }
 }
 

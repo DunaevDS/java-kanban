@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public Task newTask() {
-        return new Task("Task", "Description_task1", getNextId(), Status.NEW);
+        return new Task("Task", "Description,task1", getNextId(), Status.NEW);
     }
 
     public Epic newEpic() {

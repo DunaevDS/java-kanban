@@ -74,29 +74,14 @@ public class Task {
         this.type = type;
     }
 
-    /*@Override
-    public String toString() {
-        return String.format(
-                "Task { taskId: %s, name: %s, description: %s, status: %s, type: %s }",
-                taskId, name, description, status, type);
-    }*/
 
-    /*@Override
-    public String toString() {
-        return "Task {"
-                + "id: " + taskId
-                + ", title: '" + type + '\''
-                + ", description: '" + description + '\''
-                + ", status: " + status
-                + '}';
-    }*/
     @Override
     public  String toString(){
         return  taskId
-                + ", " + type
-                + ", " + name
-                + ", " + status
-                + ", " + description
-                + ",";
+                + "," + type
+                + "," + name
+                + "," + status
+                + ",\"" + description
+                +  "\",";
     }
 }

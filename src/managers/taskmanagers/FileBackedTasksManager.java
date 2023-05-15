@@ -15,6 +15,7 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
+    private static final FileBackedTasksManager fileBackedTasksManager = Managers.getDefaultFileBackedManager();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
@@ -57,8 +58,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
 
-        @Override
-        public void deleteAllSubtasks() {
+    @Override
+    public void deleteAllSubtasks() {
         super.deleteAllSubtasks();
         save();
     }
@@ -144,14 +145,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             bw.write(values);
 
-    } catch (IOException e) {
-        throw new ManagerSaveException(ANSI_RED + "---> Ошибка записи в файл <---" + ANSI_RESET);}
+        } catch (IOException e) {
+            throw new ManagerSaveException(ANSI_RED + "---> Ошибка записи в файл <---" + ANSI_RESET);
+        }
     }
 
     // загрузка из файла
     public static FileBackedTasksManager load(Path filePath) {
-
-        FileBackedTasksManager fileBackedTasksManager = Managers.getDefaultFileBackedManager();
 
         try {
 
@@ -159,43 +159,89 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             String[] lines = fileName.split("\n");
 
+            List<Integer> historyLine = DataTransformation.historyFromString(lines[lines.length - 1]);
+
             for (int i = 1; i < lines.length - 2; i++) {
 
                 Task task = DataTransformation.FromString(lines[i]);
-                String type = lines[i].split(", ")[1];
+                String taskType = lines[i].split(",")[1];
+                String id = lines[i].split(",")[0];
 
-                if (Type.valueOf(type).equals(Type.TASK)) {
+                if (Type.valueOf(taskType).equals(Type.TASK)) {
 
                     fileBackedTasksManager.createTask(task);
                     historyManager.add(fileBackedTasksManager.getSingleTask(task.getTaskId()));
 
                 }
 
-                if (Type.valueOf(type).equals(Type.EPIC)) {
+                if (Type.valueOf(taskType).equals(Type.EPIC)) {
 
                     Epic epic = (Epic) task;
                     fileBackedTasksManager.createEpic(epic);
-                    historyManager.add(fileBackedTasksManager.getSingleEpic(epic.getTaskId()));
-
+                    historyManager.add(fileBackedTasksManager.getSingleEpic(task.getTaskId()));
                 }
 
-                if (Type.valueOf(type).equals(Type.SUBTASK)) {
+                if (Type.valueOf(taskType).equals(Type.SUBTASK)) {
 
                     Subtask subtask = (Subtask) task;
                     fileBackedTasksManager.createSubtask(subtask);
-                    historyManager.add(fileBackedTasksManager.getSingleSubtask(subtask.getTaskId()));
-
+                    historyManager.add(fileBackedTasksManager.getSingleSubtask(task.getTaskId()));
                 }
-                List<Integer> history = DataTransformation.historyFromString(lines[lines.length-1]);
+            }
+            for (Integer value : historyLine) {     // не придумал ничего лучше такого перебора
+
+                Task task = fileBackedTasksManager.getTasks().get(value);
+                if (task != null) historyManager.add(task);
+
+                else {
+                    task = fileBackedTasksManager.getEpics().get(value);
+                    if (task != null) historyManager.add(task);
+
+                    else {
+                        task = fileBackedTasksManager.getSubtasks().get(value);
+                        historyManager.add(task);
+                    }
+                }
             }
 
-        } catch (IOException e) {
+
+            System.out.println(historyLine);
+
+        } catch (
+                IOException e) {
 
             throw new ManagerSaveException(ANSI_RED + " ---> Ошибка загрузки из файла <---" + ANSI_RESET);
-
         }
 
         return fileBackedTasksManager;
+    }
+
+    public static void main(String[] args) {
+
+        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
+
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+
+        System.out.println("------------");
+
+        Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
+        Task task2 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
+        Epic epic = fileBackedTasksManager.createEpic(fileBackedTasksManager.newEpic());
+        Subtask subtask = fileBackedTasksManager.createSubtask(fileBackedTasksManager.newSubtask(epic));
+
+
+        fileBackedTasksManager.getSingleTask(1);
+        fileBackedTasksManager.getSingleTask(2);
+        fileBackedTasksManager.getSingleEpic(3);
+        fileBackedTasksManager.getSingleTask(1);    // повторный вызов таски с id=1. Очередь вызовов будет [2,3,1]
+        fileBackedTasksManager.getSingleSubtask(4);
+
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+
 
     }
 
