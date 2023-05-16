@@ -63,7 +63,6 @@ public class DataTransformation {
 
         else
             throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);
-
     }
 
     // история в строку

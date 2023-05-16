@@ -9,6 +9,7 @@ import model.enums.Type;
 import model.utils.DataTransformation;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -131,8 +132,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     protected void save() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathToFile.toFile()));
-             BufferedReader br = new BufferedReader(new FileReader(pathToFile.toFile()))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathToFile.toFile(), StandardCharsets.UTF_8));
+             BufferedReader br = new BufferedReader(new FileReader(pathToFile.toFile(), StandardCharsets.UTF_8))) {
 
             if (br.readLine() == null) {
 
@@ -170,7 +171,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (Type.valueOf(taskType).equals(Type.TASK)) {
 
                     fileBackedTasksManager.createTask(task);
-                    historyManager.add(fileBackedTasksManager.getSingleTask(task.getTaskId()));
 
                 }
 
@@ -178,17 +178,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                     Epic epic = (Epic) task;
                     fileBackedTasksManager.createEpic(epic);
-                    historyManager.add(fileBackedTasksManager.getSingleEpic(task.getTaskId()));
                 }
 
                 if (Type.valueOf(taskType).equals(Type.SUBTASK)) {
 
                     Subtask subtask = (Subtask) task;
                     fileBackedTasksManager.createSubtask(subtask);
-                    historyManager.add(fileBackedTasksManager.getSingleSubtask(task.getTaskId()));
                 }
             }
-            for (Integer value : historyLine) {     // не придумал ничего лучше такого перебора
+            for (Integer value : historyLine) {
 
                 Task task = fileBackedTasksManager.getTasks().get(value);
                 if (task != null) historyManager.add(task);
@@ -204,8 +202,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
 
-
-            System.out.println(historyLine);
+            System.out.println("История просмотров " + historyLine + "\n");
 
         } catch (
                 IOException e) {
@@ -218,8 +215,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public static void main(String[] args) {
 
+        //новый экземпляр объекта FileBackedTasksManager
         FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
 
+        System.out.println("Восстановление из истории: ");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
         }
@@ -230,19 +229,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Task task2 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
         Epic epic = fileBackedTasksManager.createEpic(fileBackedTasksManager.newEpic());
         Subtask subtask = fileBackedTasksManager.createSubtask(fileBackedTasksManager.newSubtask(epic));
-
+        Task task3 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
 
         fileBackedTasksManager.getSingleTask(1);
         fileBackedTasksManager.getSingleTask(2);
         fileBackedTasksManager.getSingleEpic(3);
-        fileBackedTasksManager.getSingleTask(1);    // повторный вызов таски с id=1. Очередь вызовов будет [2,3,1]
+        fileBackedTasksManager.getSingleTask(1);    // повторный вызов таски с id=1. Очередь вызовов будет [2,3,1,4,5]
         fileBackedTasksManager.getSingleSubtask(4);
+        fileBackedTasksManager.getSingleTask(5);
 
-        for (Task task : manager.getHistory()) {
+        for (Task task : fileBackedTasksManager.getHistory()) {
             System.out.println(task);
         }
-
-
     }
-
 }
