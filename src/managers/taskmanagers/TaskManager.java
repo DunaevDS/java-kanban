@@ -3,6 +3,7 @@ package managers.taskmanagers;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import model.enums.Type;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,5 +77,12 @@ public interface TaskManager {
     // печать истории
     List<Task> getHistory();
 
+    Type getType(int id);
+
+    HashMap<Integer, Task> getTasks();
+
+    HashMap<Integer, Subtask> getSubtasks();
+
+    HashMap<Integer, Epic> getEpics();
 }
 

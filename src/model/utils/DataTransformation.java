@@ -1,6 +1,7 @@
 package model.utils;
 
 import managers.historymanagers.HistoryManager;
+import managers.taskmanagers.InMemoryTaskManager;
 import managers.taskmanagers.TaskManager;
 import model.Epic;
 import model.Subtask;
@@ -22,9 +23,17 @@ public class DataTransformation {
 
         StringBuilder sb = new StringBuilder();
 
-        for (Task task : taskManager.getAllTasks()) {
+        List<Task> tasks = new ArrayList<>(taskManager.getTasks().values());
+
+        tasks.addAll(taskManager.getEpics().values());
+
+        tasks.addAll(taskManager.getSubtasks().values());
+
+        for (Task task : tasks) {
+
             sb.append(task.toString()).append("\n");
         }
+
         return sb.toString();
     }
 

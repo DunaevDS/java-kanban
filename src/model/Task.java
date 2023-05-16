@@ -15,10 +15,10 @@ public class Task {
                 String name,
                 Status status,
                 String description
-                ) {
+    ) {
         this.name = name;
         this.description = description;
-        this.type  = Type.TASK;
+        this.type = Type.TASK;
         this.status = status;
         this.taskId = taskId;
     }
@@ -56,7 +56,7 @@ public class Task {
     }
 
     public Type getType() {
-        return type;
+        return Type.TASK;
     }
 
     public void setType(Type type) {
@@ -64,13 +64,14 @@ public class Task {
     }
 
 
+
     @Override
-    public  String toString(){
-        return  taskId
+    public String toString() {
+        return taskId
                 + "," + type
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                +  "\",";
+                + "\",";
     }
 }

@@ -32,15 +32,15 @@ public class InMemoryTaskManager implements TaskManager {
     //Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
     // Здесь создается новая таска и потом она поступает в createTask у Бэк менеджера.
     protected Task newTask() {
-        return new Task(getNextId(), Type.TASK,"Task",Status.NEW,"Description,task1");
+        return new Task(getNextId(), Type.TASK, "Task", Status.NEW, "Description,task1");
     }
 
     protected Epic newEpic() {
-        return new Epic(getNextId(),Type.EPIC,"Epic",Status.NEW,"Description_epic1");
+        return new Epic(getNextId(), Type.EPIC, "Epic", Status.NEW, "Description_epic1");
     }
 
     protected Subtask newSubtask(Epic epic) {
-        return new Subtask(getNextId(),Type.SUBTASK,"Subtask",Status.NEW,"Subtask1",epic.getTaskId());
+        return new Subtask(getNextId(), Type.SUBTASK, "Subtask", Status.NEW, "Subtask1", epic.getTaskId());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {
 
-        for (Task task: tasks.values()){
+        for (Task task : tasks.values()) {
             historyManager.remove(task.getTaskId());
         }
         tasks.clear();
@@ -105,11 +105,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllEpics() {
 
-        for (Subtask subtask: subtasks.values()) {
+        for (Subtask subtask : subtasks.values()) {
             historyManager.remove(subtask.getTaskId());
         }
 
-        for (Epic epic: epics.values()) {
+        for (Epic epic : epics.values()) {
             historyManager.remove(epic.getTaskId());
         }
 
@@ -125,7 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.removeAllSubtasks();
         }
 
-        for (Subtask subtask: subtasks.values()) {
+        for (Subtask subtask : subtasks.values()) {
             historyManager.remove(subtask.getTaskId());
         }
 
@@ -176,6 +176,25 @@ public class InMemoryTaskManager implements TaskManager {
 
         updateEpicStatus(subtask.getEpicId());
     }
+
+    @Override
+    public Type getType(int id) {
+        Task singleTask = tasks.get(id);
+        if (tasks.get(id) != null) return tasks.get(id).getType();
+        else if (epics.get(id) != null) return epics.get(id).getType();
+        else return subtasks.get(id).getType();
+        /*for (Task task : tasks.values()) {
+            if (task.getTaskId() == id) return task.getType();
+        }
+        for (Epic epic : epics.values()) {
+            if (epic.getTaskId() == id) return epic.getType();
+        }
+        for (Subtask subtask : subtasks.values()) {
+            if (subtask.getTaskId() == id) return subtask.getType();
+        }*/
+
+    }
+
 
     @Override
     public Task getSingleTask(int id) {
@@ -317,6 +336,21 @@ public class InMemoryTaskManager implements TaskManager {
             }
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    @Override
+    public HashMap<Integer, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    @Override
+    public HashMap<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    @Override
+    public HashMap<Integer, Task> getTasks() {
+        return tasks;
     }
 }
 
