@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class DataTransformation {
 
     public static final String ANSI_RED = "\u001B[31m";
