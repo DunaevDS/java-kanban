@@ -10,28 +10,17 @@ public class Task {
     protected Status status;
     protected Type type;
 
-    public Task(String name,
-                String description,
-                int taskId,
-                Status status) {
-        this.name = name;
-        this.description = description;
-        this.type = Type.TASK;
-        this.status = status;
-        this.taskId = taskId;
-    }
-
-    // конструктор для преобразования из строки
-    public Task(int id,
-                String type,
+    public Task(int taskId,
+                Type type,
                 String name,
                 Status status,
-                String description) {
-        this.taskId = id;
+                String description
+                ) {
         this.name = name;
-        this.status = status;
         this.description = description;
-        this.type = Type.TASK;
+        this.type  = Type.TASK;
+        this.status = status;
+        this.taskId = taskId;
     }
 
     public int getTaskId() {

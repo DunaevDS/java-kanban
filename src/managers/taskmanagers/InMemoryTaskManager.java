@@ -6,6 +6,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
+import model.enums.Type;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,27 +15,32 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected static HistoryManager historyManager = Managers.getDefaultHistory();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-    public int getNextId() {
+    private int getNextId() {
         return ++id;
     }
 
-    public Task newTask() {
-        return new Task("Task", "Description,task1", getNextId(), Status.NEW);
+
+    // ниже основные методы для создания задач.
+
+    //Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
+    // Здесь создается новая таска и потом она поступает в createTask у Бэк менеджера.
+    protected Task newTask() {
+        return new Task(getNextId(), Type.TASK,"Task",Status.NEW,"Description,task1");
     }
 
-    public Epic newEpic() {
-        return new Epic("Epic", "Description_epic1", getNextId(), Status.NEW);
+    protected Epic newEpic() {
+        return new Epic(getNextId(),Type.EPIC,"Epic",Status.NEW,"Description_epic1");
     }
 
-    public Subtask newSubtask(Epic epic) {
-        return new Subtask("Subtask", "Subtask1", epic.getTaskId(), getNextId(), Status.NEW);
+    protected Subtask newSubtask(Epic epic) {
+        return new Subtask(getNextId(),Type.SUBTASK,"Subtask",Status.NEW,"Subtask1",epic.getTaskId());
     }
 
     @Override
@@ -60,52 +66,69 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Collection<Task> getAllTasks() {
-        ArrayList<Task> printTasks = new ArrayList<>();
         if (tasks.isEmpty()) {
             System.out.println(ANSI_RED + "------> No tasks <------" + ANSI_RESET);
             return null;
         }
-        return tasks.values();
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public Collection<Epic> getAllEpics() {
-        ArrayList<Epic> printEpics = new ArrayList<>();
 
         if (epics.isEmpty()) {
             System.out.println(ANSI_RED + "------> No epics <------" + ANSI_RESET);
             return null;
         }
-        return epics.values();
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public Collection<Subtask> getAllSubtasks() {
-        ArrayList<Subtask> printSubtasks = new ArrayList<>();
+
         if (subtasks.isEmpty()) {
             System.out.println(ANSI_RED + "------> No subtasks <------" + ANSI_RESET);
             return null;
         }
-        return subtasks.values();
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
     public void deleteAllTasks() {
+
+        for (Task task: tasks.values()){
+            historyManager.remove(task.getTaskId());
+        }
         tasks.clear();
     }
 
     @Override
     public void deleteAllEpics() {
+
+        for (Subtask subtask: subtasks.values()) {
+            historyManager.remove(subtask.getTaskId());
+        }
+
+        for (Epic epic: epics.values()) {
+            historyManager.remove(epic.getTaskId());
+        }
+
         subtasks.clear();
         epics.clear();
     }
 
     @Override
     public void deleteAllSubtasks() {
+
         for (int value : epics.keySet()) {
             Epic epic = epics.get(value);
             epic.removeAllSubtasks();
         }
+
+        for (Subtask subtask: subtasks.values()) {
+            historyManager.remove(subtask.getTaskId());
+        }
+
         subtasks.clear();
     }
 
@@ -294,18 +317,6 @@ public class InMemoryTaskManager implements TaskManager {
             }
             epic.setStatus(Status.IN_PROGRESS);
         }
-    }
-
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
-    }
-
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
     }
 }
 

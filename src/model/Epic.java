@@ -9,25 +9,16 @@ public class Epic extends Task {
 
     private final ArrayList<Integer> subs;
 
-    public Epic(String name,
-                String description,
-                int id,
-                Status status) {
-        super(name, description, id, status);
+    public Epic(int id,
+                Type type,
+                String name,
+                Status status,
+                String description) {
+        super(id, type, name, status, description);
         this.type = Type.EPIC;
         this.subs = new ArrayList<>();
     }
 
-    // конструктор для преобразования из строки
-    public Epic(int id,
-                String type,
-                String name,
-                Status status,
-                String description) {
-        super(name, description, id, status);
-        this.type = Type.EPIC;
-        this.subs = new ArrayList<>();
-    }
 
     public ArrayList<Integer> getSubs() {
         return subs;
@@ -50,8 +41,8 @@ public class Epic extends Task {
     }
 
     @Override
-    public  String toString(){
-        return  taskId
+    public String toString() {
+        return taskId
                 + "," + type
                 + "," + name
                 + "," + status

@@ -22,43 +22,32 @@ public class DataTransformation {
 
         StringBuilder sb = new StringBuilder();
 
-        List<Task> tasks = new ArrayList<>(taskManager.getTasks().values());
-        List<Epic> epics = new ArrayList<>(taskManager.getEpics().values());
-        List<Subtask> subtasks = new ArrayList<>(taskManager.getSubtasks().values());
-
-        for (Task task : tasks) {
+        for (Task task : taskManager.getAllTasks()) {
             sb.append(task.toString()).append("\n");
-        }
-        for (Epic epic : epics) {
-            sb.append(epic.toString()).append("\n");
-        }
-        for (Subtask subtask : subtasks) {
-            sb.append(subtask.toString()).append("\n");
         }
         return sb.toString();
     }
 
     //преобразование из строки
-    public static Task FromString(String value) {
+    public static Task fromString(String value) {
         int epicID = 0;
         String[] st = value.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         int id = Integer.parseInt(st[0]);
-        String type = st[1];
+        Type type = Type.valueOf(st[1]);
         String name = st[2];
         Status status = Status.valueOf(st[3]);
         String description = st[4].substring(1, st[4].length() - 1);
 
-        if (Type.valueOf(type).equals(Type.SUBTASK))
-            epicID = Integer.parseInt(st[5]);
-
-        if (Type.valueOf(type).equals(Type.TASK))
+        if (type.equals(Type.TASK))
             return new Task(id, type, name, status, description);
 
-        if (Type.valueOf(type).equals(Type.EPIC))
+        if (type.equals(Type.EPIC))
             return new Epic(id, type, name, status, description);
 
-        if (Type.valueOf(type).equals(Type.SUBTASK))
-            return new Subtask(id, name, status, description, epicID);
+        if (type.equals(Type.SUBTASK)) {
+            epicID = Integer.parseInt(st[5]);
+            return new Subtask(id, type, name, status, description, epicID);
+            }
 
         else
             throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);

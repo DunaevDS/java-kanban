@@ -76,12 +76,5 @@ public interface TaskManager {
     // печать истории
     List<Task> getHistory();
 
-    HashMap<Integer, Task> getTasks();
-
-    HashMap<Integer, Subtask> getSubtasks();
-
-    HashMap<Integer, Epic> getEpics();
-
-
 }
 

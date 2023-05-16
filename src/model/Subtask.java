@@ -9,27 +9,15 @@ public class Subtask extends Task {
 
     private final int epicId;
 
-    public Subtask(String name,
-                   String description,
-                   int epicId,
-                   int taskId,
-                   Status status) {
-        super(name, description, taskId, status);
-        this.epicId = epicId;
-        this.type = Type.SUBTASK;
-    }
-
-    // конструктор для преобразования из строки
-    public Subtask(int id,
+    public Subtask(int taskId,
+                   Type type,
                    String name,
                    Status status,
                    String description,
-                   int epicID) {
-        super(name, description, id, status);
+                   int epicId) {
+        super(taskId,type,name,status, description);
+        this.epicId = epicId;
         this.type = Type.SUBTASK;
-        this.status = status;
-        this.epicId = epicID;
-        this.taskId = id;
     }
 
     public int getEpicId() {
