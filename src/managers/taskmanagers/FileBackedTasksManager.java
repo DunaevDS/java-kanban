@@ -136,21 +136,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return super.getType(id);
     }
 
+
     protected void save() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathToFile.toFile(), StandardCharsets.UTF_8));
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathToFile.toFile(), StandardCharsets.UTF_8));   // часто ли на практике используется такая запись с кодировкой или можно опустить?
              BufferedReader br = new BufferedReader(new FileReader(pathToFile.toFile(), StandardCharsets.UTF_8))) {
 
             if (br.readLine() == null) {
 
                 String header = "id,type,name,status,description,epic";
-                bw.write(header);       // Чем newLine() лучше чем + "\n"? Лучше читаемость?
-                bw.newLine();
+                bw.write(header);
+                bw.newLine();  // Как понимаю newLine вставляет символы "\r\n", которые работают на маке, а не только "\n" как в винде ?
 
             }
 
-            String values = DataTransformation.toString(this) + "\n" + DataTransformation.historyToString(historyManager);
-
+            String values = DataTransformation.toString(this);
+            String historyLine = DataTransformation.historyToString(historyManager);
             bw.write(values);
+            bw.newLine();
+            bw.write(historyLine);
 
         } catch (IOException e) {
             throw new ManagerSaveException(ANSI_RED + "---> Ошибка записи в файл <---" + ANSI_RESET);
@@ -174,28 +177,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                 Task task = DataTransformation.fromString(lines[i]);
 
-                Type taskType = task.getType();
-
-
+                Type taskType = task.getType(); //подскажите, почему лучше брать из таски, а не из строки? Из-за возможных ошибок
+                                                // при записи в строку?
+                
                 if (task.getTaskId() > counterId)
                     counterId = task.getTaskId();
 
-                switch (taskType) {
-                    case TASK: {
-                        fileBackedTasksManager.createTask(task);
-                        break;
-                    }
-                    case EPIC: {
-                        Epic epic = (Epic) task;
-                        fileBackedTasksManager.createEpic(epic);
-                        break;
-                    }
-                    case SUBTASK: {
-                        Subtask subtask = (Subtask) task;
-                        fileBackedTasksManager.createSubtask(subtask);
-                        break;
-                    }
-                }
+                addTask(task, taskType);
 
             }
             for (Integer value : historyLine) {
@@ -214,6 +202,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
 
+            setId(counterId);
 
         } catch (
                 IOException e) {
@@ -222,6 +211,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
 
         return fileBackedTasksManager;
+    }
+
+    private static void addTask(Task task, Type taskType) {
+        switch (taskType) {
+            case TASK: {
+                fileBackedTasksManager.tasks.put(task.getTaskId(), task);    // Почему лучше добавлять в мапу таким способом, а
+                break;                                                       // не через метод createTask ?
+            }                                                                // Метод createTask для этого и используется. Или же в этом методе
+            case EPIC: {                                                     // выполняется save(), который не нужен?
+                Epic epic = (Epic) task;
+                fileBackedTasksManager.epics.put(task.getTaskId(), epic);
+                break;
+            }
+            case SUBTASK: {
+                Subtask subtask = (Subtask) task;
+                fileBackedTasksManager.subtasks.put(task.getTaskId(),subtask);
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -237,16 +245,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         System.out.println("------------");
 
-        Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
-        Task task2 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
-        Epic epic = fileBackedTasksManager.createEpic(fileBackedTasksManager.newEpic());
-        Subtask subtask = fileBackedTasksManager.createSubtask(fileBackedTasksManager.newSubtask(epic));
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
+        Task task11 = inMemoryTaskManager.createTask(inMemoryTaskManager.newTask()); // проверка что id = 5;
 
-        fileBackedTasksManager.getSingleTask(1);
         fileBackedTasksManager.getSingleTask(2);
         fileBackedTasksManager.getSingleEpic(3);
-        fileBackedTasksManager.getSingleTask(1);    // повторный вызов таски с id=1. Очередь вызовов будет [2,3,1,4,5]
+        fileBackedTasksManager.getSingleTask(1);    // Очередь вызовов [2,3,1,4,5]
         fileBackedTasksManager.getSingleSubtask(4);
 
 

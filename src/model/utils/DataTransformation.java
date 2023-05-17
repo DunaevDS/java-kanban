@@ -72,7 +72,7 @@ public class DataTransformation {
                 sb.append(task.getTaskId()).append(",");
             }
 
-        return sb.toString();
+        return sb.substring(0,sb.length()-1);
 
     }
 

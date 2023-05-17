@@ -27,10 +27,6 @@ public class Task {
         return taskId;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
-    }
-
     public String getName() {
         return name;
     }

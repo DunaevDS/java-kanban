@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int id;
+    private static int id;
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -22,10 +22,13 @@ public class InMemoryTaskManager implements TaskManager {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-    private int getNextId() {
+    private static int getNextId() {
         return ++id;
     }
 
+    public static void setId(int id) {
+        InMemoryTaskManager.id = id;
+    }
 
     // ниже основные методы для создания задач.
 
@@ -179,19 +182,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Type getType(int id) {
-        Task singleTask = tasks.get(id);
         if (tasks.get(id) != null) return tasks.get(id).getType();
         else if (epics.get(id) != null) return epics.get(id).getType();
         else return subtasks.get(id).getType();
-        /*for (Task task : tasks.values()) {
-            if (task.getTaskId() == id) return task.getType();
-        }
-        for (Epic epic : epics.values()) {
-            if (epic.getTaskId() == id) return epic.getType();
-        }
-        for (Subtask subtask : subtasks.values()) {
-            if (subtask.getTaskId() == id) return subtask.getType();
-        }*/
 
     }
 
@@ -339,10 +332,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
-    }
-
+    public HashMap<Integer, Subtask> getSubtasks() {  // Вы пишите что данные методы не нужны, но они ведь используются
+        return subtasks;                              // в классе DataTransformation для получения значений из мап.
+    }                                                 // Даже если сделаем мапы protected, то эти мапы не видны
+                                                      // в DataTransformation без использования этих геттеров.
     @Override
     public HashMap<Integer, Epic> getEpics() {
         return epics;
@@ -352,5 +345,6 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Task> getTasks() {
         return tasks;
     }
+
 }
 

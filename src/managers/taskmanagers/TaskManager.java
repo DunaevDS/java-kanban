@@ -84,5 +84,6 @@ public interface TaskManager {
     HashMap<Integer, Subtask> getSubtasks();
 
     HashMap<Integer, Epic> getEpics();
+
 }
 
