@@ -18,24 +18,7 @@ public class DataTransformation {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-    // преобразование в строку
-    public static String toString(TaskManager taskManager) {
 
-        StringBuilder sb = new StringBuilder();
-
-        List<Task> tasks = new ArrayList<>(taskManager.getTasks().values());
-
-        tasks.addAll(taskManager.getEpics().values());
-
-        tasks.addAll(taskManager.getSubtasks().values());
-
-        for (Task task : tasks) {
-
-            sb.append(task.toString()).append("\n");
-        }
-
-        return sb.toString();
-    }
 
     //преобразование из строки
     public static Task fromString(String value) {

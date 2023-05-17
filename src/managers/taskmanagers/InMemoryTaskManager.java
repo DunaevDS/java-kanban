@@ -26,8 +26,8 @@ public class InMemoryTaskManager implements TaskManager {
         return ++id;
     }
 
-    public static void setId(int id) {
-        InMemoryTaskManager.id = id;
+    protected void setId(int id) {
+        this.id = id;
     }
 
     // ниже основные методы для создания задач.
@@ -330,21 +330,5 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
-
-    @Override
-    public HashMap<Integer, Subtask> getSubtasks() {  // Вы пишите что данные методы не нужны, но они ведь используются
-        return subtasks;                              // в классе DataTransformation для получения значений из мап.
-    }                                                 // Даже если сделаем мапы protected, то эти мапы не видны
-                                                      // в DataTransformation без использования этих геттеров.
-    @Override
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    @Override
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
-
 }
 

@@ -7,20 +7,20 @@ import model.Task;
 import managers.Managers;
 import model.enums.Type;
 import model.utils.DataTransformation;
+import modeel
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
-    private static final FileBackedTasksManager fileBackedTasksManager = Managers.getDefaultFileBackedManager();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-    private static final Path pathToFile = Path.of("src\\test.csv");
 
     @Override
     public Task createTask(Task task) {
@@ -138,18 +138,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
     protected void save() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathToFile.toFile(), StandardCharsets.UTF_8));   // часто ли на практике используется такая запись с кодировкой или можно опустить?
-             BufferedReader br = new BufferedReader(new FileReader(pathToFile.toFile(), StandardCharsets.UTF_8))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));   // почему такая запись лучше чем моя прошлая?
+             BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) {
 
             if (br.readLine() == null) {
 
                 String header = "id,type,name,status,description,epic";
                 bw.write(header);
-                bw.newLine();  // Как понимаю newLine вставляет символы "\r\n", которые работают на маке, а не только "\n" как в винде ?
+                bw.newLine();
 
             }
 
-            String values = DataTransformation.toString(this);
+            String values = toString(this);
             String historyLine = DataTransformation.historyToString(historyManager);
             bw.write(values);
             bw.newLine();
@@ -163,7 +163,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     // загрузка из файла
     public static FileBackedTasksManager load(Path filePath) {
 
-        int counterId = 0;
+        final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();  // как я понял, этот "перенос" сделан
+                                                                                            // по причине того, что БэкМенеджером
+        int counterId = 0;                                                                  // пользуемся только в этом методе?
 
         try {
 
@@ -177,32 +179,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
                 Task task = DataTransformation.fromString(lines[i]);
 
-                Type taskType = task.getType(); //подскажите, почему лучше брать из таски, а не из строки? Из-за возможных ошибок
-                                                // при записи в строку?
+                Type taskType = task.getType();
+
                 
                 if (task.getTaskId() > counterId)
                     counterId = task.getTaskId();
 
-                addTask(task, taskType);
+                taskManager.addTask(task, taskType);
 
             }
             for (Integer value : historyLine) {
 
-                Task task = fileBackedTasksManager.tasks.get(value);
-                if (task != null) historyManager.add(task);
+                Task task = taskManager.tasks.get(value);      // метод load статичный по ТЗ, поэтому
+                if (task != null) historyManager.add(task);    // Task task = tasks.get(value) нельзя
 
                 else {
-                    task = fileBackedTasksManager.epics.get(value);
+                    task = taskManager.epics.get(value);
                     if (task != null) historyManager.add(task);
 
                     else {
-                        task = fileBackedTasksManager.subtasks.get(value);
+                        task = taskManager.subtasks.get(value);
                         historyManager.add(task);
                     }
                 }
             }
 
-            setId(counterId);
+            taskManager.setId(counterId);
 
         } catch (
                 IOException e) {
@@ -210,26 +212,44 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             throw new ManagerSaveException(ANSI_RED + " ---> Ошибка загрузки из файла <---" + ANSI_RESET);
         }
 
-        return fileBackedTasksManager;
+        return taskManager;
     }
-
-    private static void addTask(Task task, Type taskType) {
+    private void addTask(Task task, Type taskType) {
         switch (taskType) {
             case TASK: {
-                fileBackedTasksManager.tasks.put(task.getTaskId(), task);    // Почему лучше добавлять в мапу таким способом, а
-                break;                                                       // не через метод createTask ?
-            }                                                                // Метод createTask для этого и используется. Или же в этом методе
-            case EPIC: {                                                     // выполняется save(), который не нужен?
+                tasks.put(task.getTaskId(), task);
+                break;
+            }
+            case EPIC: {
                 Epic epic = (Epic) task;
-                fileBackedTasksManager.epics.put(task.getTaskId(), epic);
+                epics.put(task.getTaskId(), epic);
                 break;
             }
             case SUBTASK: {
                 Subtask subtask = (Subtask) task;
-                fileBackedTasksManager.subtasks.put(task.getTaskId(),subtask);
+                subtasks.put(task.getTaskId(),subtask);
                 break;
             }
         }
+    }
+
+    // преобразование в строку
+    public static String toString(TaskManager taskManager) {            // посчитал что данный метод обязательно должен быть в утилитарном классе
+                                                                        // т.к. статик и схож с другими методами, которые помещены в тот класс.
+        StringBuilder sb = new StringBuilder();                         // Если метод статик, то как определить должен ли он быть в утил. классе или нет?
+
+        List<Task> tasks = new ArrayList<>(taskManager.getAllTasks());
+
+        tasks.addAll(taskManager.getAllEpics());
+
+        tasks.addAll(taskManager.getAllSubtasks());
+
+        for (Task task : tasks) {
+
+            sb.append(task.toString()).append("\n");
+        }
+
+        return sb.toString();
     }
 
     public static void main(String[] args) {
@@ -249,7 +269,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         Task task11 = inMemoryTaskManager.createTask(inMemoryTaskManager.newTask()); // проверка что id = 5;
 
-        fileBackedTasksManager.getSingleTask(2);
+        .getSingleTask(2);
         fileBackedTasksManager.getSingleEpic(3);
         fileBackedTasksManager.getSingleTask(1);    // Очередь вызовов [2,3,1,4,5]
         fileBackedTasksManager.getSingleSubtask(4);

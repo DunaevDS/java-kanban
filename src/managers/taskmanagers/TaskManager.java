@@ -79,11 +79,5 @@ public interface TaskManager {
 
     Type getType(int id);
 
-    HashMap<Integer, Task> getTasks();
-
-    HashMap<Integer, Subtask> getSubtasks();
-
-    HashMap<Integer, Epic> getEpics();
-
 }
 
