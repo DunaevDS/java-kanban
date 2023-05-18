@@ -13,10 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -139,9 +138,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     protected void save() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));   // почему такая запись лучше, чем моя прошлая, когда было
-             BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) { // private static final Path pathToFile = Path.of("src\\test.csv") и
-                                                                                                                        // ... BufferedWriter(new FileWriter(pathToFile.toFile()) ?
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));
+             BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) {
+
             if (br.readLine() == null) {
 
                 String header = "id,type,name,status,description,epic";
@@ -177,7 +176,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     // загрузка из файла
     public static FileBackedTasksManager load(Path filePath) {
 
-        final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();  // как я понял, этот "перенос" сделан
+        final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();
 
         int counterId = 0;
 
@@ -199,13 +198,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (task.getTaskId() > counterId)
                     counterId = task.getTaskId();
 
-                taskManager.addTask(task, taskType);  // addTask не статичный, а если делать его статичным, то не видит не статичные мапы.
+                taskManager.addTask(task, taskType);
 
             }
             for (Integer value : historyLine) {
 
-                Task task = taskManager.tasks.get(value);      // метод load статичный по ТЗ, поэтому
-                if (task != null) historyManager.add(task);    // Task task = tasks.get(value) нельзя
+                Task task = taskManager.tasks.get(value);
+                if (task != null) historyManager.add(task);
 
                 else {
                     task = taskManager.epics.get(value);
