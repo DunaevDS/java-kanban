@@ -14,8 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
@@ -135,7 +136,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return super.getType(id);
     }
 
-
     protected void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));   // почему такая запись лучше, чем моя прошлая, когда было
              BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) { // private static final Path pathToFile = Path.of("src\\test.csv") и
@@ -147,12 +147,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 bw.newLine();
 
             }
+            // преобразование в строку
+            List<Task> tasks = new ArrayList<>(getAllTasks());
 
-            String values = toString(this);
+            if (getAllEpics() != null )
+                tasks.addAll(getAllEpics());
+
+            if (getAllSubtasks() != null)
+                tasks.addAll(getAllSubtasks());
+
+            String result = tasks.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("\n"));
+
             String historyLine = DataTransformation.historyToString(historyManager);
-            bw.write(values);
+
+            bw.write(result);
             bw.newLine();
             bw.write(historyLine);
+
 
         } catch (IOException e) {
             throw new ManagerSaveException(ANSI_RED + "---> Ошибка записи в файл <---" + ANSI_RESET);
@@ -163,8 +176,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static FileBackedTasksManager load(Path filePath) {
 
         final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();  // как я понял, этот "перенос" сделан
-                                                                                            // по причине того, что taskManager'ом
-        int counterId = 0;                                                                  // пользуемся только в этом методе?
+
+        int counterId = 0;
 
         try {
 
@@ -232,67 +245,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-    // преобразование в строку
-    public static String toString(TaskManager taskManager) {            // посчитал что данный метод обязательно должен быть в утилитарном классе
-                                                                        // т.к. статик и схож с другими методами, которые помещены в тот класс.
-        StringBuilder sb = new StringBuilder();                         // Если метод статик, то как определить должен ли он быть в утил. классе или нет?
-
-        List<Task> tasks = new ArrayList<>(taskManager.getAllTasks());
-
-        if (taskManager.getAllEpics() != null )
-        tasks.addAll(taskManager.getAllEpics());
-
-        if (taskManager.getAllSubtasks() != null)
-        tasks.addAll(taskManager.getAllSubtasks());
-
-        for (Task task : tasks) {
-            if (task.getEpicId() == -1) {
-                sb.append(task.getTaskId());
-                sb.append(",");
-                sb.append(task.getType());
-                sb.append(",");
-                sb.append(task.getName());
-                sb.append(",");
-                sb.append(task.getStatus());
-                sb.append(",\"");
-                sb.append(task.getDescription());
-                sb.append("\"\n");
-            } else {
-                sb.append(task.getTaskId());
-                sb.append(",");
-                sb.append(task.getType());
-                sb.append(",");
-                sb.append(task.getName());
-                sb.append(",");
-                sb.append(task.getStatus());
-                sb.append(",\"");
-                sb.append(task.getDescription());
-                sb.append("\",");
-                sb.append(task.getEpicId());
-                sb.append("\n");
-            }
-        }
-
-        return sb.toString();
-    }
-
     public static void main(String[] args) {
 
         //новый экземпляр объекта FileBackedTasksManager
-/*        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
+        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
 
 
-        System.out.println("Восстановление из истории: ");
+/*        System.out.println("Восстановление из истории: ");
 
         for (Task task : manager.getHistory()) {
 
             System.out.println(task);
 
-        }
+        }*/
 
-        Task task1 = taskManager.createTask(taskManager.newTask());
+        Task task1 = manager.createTask(manager.newTask());
 
-        Task task2 = taskManager.createTask(taskManager.newTask());
+       /*Task task2 = taskManager.createTask(taskManager.newTask());
 
         Epic epic = taskManager.createEpic(taskManager.newEpic());
 

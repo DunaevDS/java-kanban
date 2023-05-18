@@ -67,6 +67,6 @@ public class Task {
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                + "\",";
+                + "\"";
     }
 }
