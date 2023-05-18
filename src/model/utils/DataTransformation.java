@@ -19,7 +19,6 @@ public class DataTransformation {
     public static final String ANSI_RESET = "\u001B[0m";
 
 
-
     //преобразование из строки
     public static Task fromString(String value) {
         int epicID = 0;
@@ -30,19 +29,18 @@ public class DataTransformation {
         Status status = Status.valueOf(st[3]);
         String description = st[4].substring(1, st[4].length() - 1);
 
-        if (type.equals(Type.TASK))
-            return new Task(id, type, name, status, description);
-
-        if (type.equals(Type.EPIC))
-            return new Epic(id, type, name, status, description);
-
-        if (type.equals(Type.SUBTASK)) {
-            epicID = Integer.parseInt(st[5]);
-            return new Subtask(id, type, name, status, description, epicID);
+        switch (type) {
+            case TASK:
+                return new Task(id, name, status, description);
+            case EPIC:
+                return new Epic(id, name, status, description);
+            case SUBTASK: {
+                epicID = Integer.parseInt(st[5]);
+                return new Subtask(id, name, status, description, epicID);
             }
-
-        else
-            throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);
+            default:
+                throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);
+        }
     }
 
     // история в строку
@@ -54,8 +52,8 @@ public class DataTransformation {
             if (task != null) {
                 sb.append(task.getTaskId()).append(",");
             }
-
-        return sb.substring(0,sb.length()-1);
+        if (sb.toString().equals("")) return sb.toString();
+        else return sb.substring(0, sb.length() - 1);
 
     }
 

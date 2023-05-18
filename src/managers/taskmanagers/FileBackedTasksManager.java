@@ -7,7 +7,6 @@ import model.Task;
 import managers.Managers;
 import model.enums.Type;
 import model.utils.DataTransformation;
-import modeel
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -138,9 +137,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
     protected void save() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));   // почему такая запись лучше чем моя прошлая?
-             BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) {
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));   // почему такая запись лучше, чем моя прошлая, когда было
+             BufferedReader br = new BufferedReader(new FileReader("src\\test.csv", StandardCharsets.UTF_8))) { // private static final Path pathToFile = Path.of("src\\test.csv") и
+                                                                                                                        // ... BufferedWriter(new FileWriter(pathToFile.toFile()) ?
             if (br.readLine() == null) {
 
                 String header = "id,type,name,status,description,epic";
@@ -164,7 +163,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static FileBackedTasksManager load(Path filePath) {
 
         final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();  // как я понял, этот "перенос" сделан
-                                                                                            // по причине того, что БэкМенеджером
+                                                                                            // по причине того, что taskManager'ом
         int counterId = 0;                                                                  // пользуемся только в этом методе?
 
         try {
@@ -185,7 +184,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (task.getTaskId() > counterId)
                     counterId = task.getTaskId();
 
-                taskManager.addTask(task, taskType);
+                taskManager.addTask(task, taskType);  // addTask не статичный, а если делать его статичным, то не видит не статичные мапы.
 
             }
             for (Integer value : historyLine) {
@@ -240,13 +239,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         List<Task> tasks = new ArrayList<>(taskManager.getAllTasks());
 
+        if (taskManager.getAllEpics() != null )
         tasks.addAll(taskManager.getAllEpics());
 
+        if (taskManager.getAllSubtasks() != null)
         tasks.addAll(taskManager.getAllSubtasks());
 
         for (Task task : tasks) {
-
-            sb.append(task.toString()).append("\n");
+            if (task.getEpicId() == -1) {
+                sb.append(task.getTaskId());
+                sb.append(",");
+                sb.append(task.getType());
+                sb.append(",");
+                sb.append(task.getName());
+                sb.append(",");
+                sb.append(task.getStatus());
+                sb.append(",\"");
+                sb.append(task.getDescription());
+                sb.append("\"\n");
+            } else {
+                sb.append(task.getTaskId());
+                sb.append(",");
+                sb.append(task.getType());
+                sb.append(",");
+                sb.append(task.getName());
+                sb.append(",");
+                sb.append(task.getStatus());
+                sb.append(",\"");
+                sb.append(task.getDescription());
+                sb.append("\",");
+                sb.append(task.getEpicId());
+                sb.append("\n");
+            }
         }
 
         return sb.toString();
@@ -255,29 +279,40 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static void main(String[] args) {
 
         //новый экземпляр объекта FileBackedTasksManager
-        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
+/*        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
+
 
         System.out.println("Восстановление из истории: ");
+
         for (Task task : manager.getHistory()) {
+
             System.out.println(task);
 
         }
+
+        Task task1 = taskManager.createTask(taskManager.newTask());
+
+        Task task2 = taskManager.createTask(taskManager.newTask());
+
+        Epic epic = taskManager.createEpic(taskManager.newEpic());
+
+        Subtask subtask = taskManager.createSubtask(taskManager.newSubtask(epic));
+
 
         System.out.println("------------");
 
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
-        Task task11 = inMemoryTaskManager.createTask(inMemoryTaskManager.newTask()); // проверка что id = 5;
+        taskManager.getSingleTask(2);
 
-        .getSingleTask(2);
-        fileBackedTasksManager.getSingleEpic(3);
-        fileBackedTasksManager.getSingleTask(1);    // Очередь вызовов [2,3,1,4,5]
-        fileBackedTasksManager.getSingleSubtask(4);
+        taskManager.getSingleEpic(3);
 
+        taskManager.getSingleTask(1);
 
-        for (Task task : fileBackedTasksManager.getHistory()) {
+        taskManager.getSingleSubtask(4);
 
+        for (Task task : taskManager.getHistory()) {
             System.out.println(task);
-        }
+        }*/
     }
 }

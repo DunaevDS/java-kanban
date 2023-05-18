@@ -22,7 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
-    private static int getNextId() {
+    private int getNextId() {
         return ++id;
     }
 
@@ -35,31 +35,34 @@ public class InMemoryTaskManager implements TaskManager {
     //Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
     // Здесь создается новая таска и потом она поступает в createTask у Бэк менеджера.
     protected Task newTask() {
-        return new Task(getNextId(), Type.TASK, "Task", Status.NEW, "Description,task1");
+        return new Task(0,  "Task", Status.NEW, "Description,task1");
     }
 
     protected Epic newEpic() {
-        return new Epic(getNextId(), Type.EPIC, "Epic", Status.NEW, "Description_epic1");
+        return new Epic(0, "Epic", Status.NEW, "Description_epic1");
     }
 
     protected Subtask newSubtask(Epic epic) {
-        return new Subtask(getNextId(), Type.SUBTASK, "Subtask", Status.NEW, "Subtask1", epic.getTaskId());
+        return new Subtask(0, "Subtask", Status.NEW, "Subtask1", epic.getTaskId());
     }
 
     @Override
     public Task createTask(Task task) {
+        task.setTaskId(getNextId());
         tasks.put(task.getTaskId(), task);
         return task;
     }
 
     @Override
     public Epic createEpic(Epic epic) {
+        epic.setTaskId(getNextId());
         epics.put(epic.getTaskId(), epic);
         return epic;
     }
 
     @Override
     public Subtask createSubtask(Subtask subtask) {
+        subtask.setTaskId(getNextId());
         subtasks.put(subtask.getTaskId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         epic.addSubtask(subtask.getTaskId());

@@ -8,23 +8,24 @@ public class Task {
     protected String name;
     protected String description;
     protected Status status;
-    protected Type type;
 
     public Task(int taskId,
-                Type type,
                 String name,
                 Status status,
                 String description
     ) {
         this.name = name;
         this.description = description;
-        this.type = Type.TASK;
         this.status = status;
         this.taskId = taskId;
     }
 
     public int getTaskId() {
         return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 
     public String getName() {
@@ -55,16 +56,14 @@ public class Task {
         return Type.TASK;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public int getEpicId () {
+        return -1;
     }
-
-
 
     @Override
     public String toString() {
         return taskId
-                + "," + type
+                + "," + Type.TASK
                 + "," + name
                 + "," + status
                 + ",\"" + description

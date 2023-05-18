@@ -10,15 +10,12 @@ public class Epic extends Task {
     private final ArrayList<Integer> subs;
 
     public Epic(int id,
-                Type type,
                 String name,
                 Status status,
                 String description) {
-        super(id, type, name, status, description);
-        this.type = Type.EPIC;
+        super(id, name, status, description);
         this.subs = new ArrayList<>();
     }
-
 
     public ArrayList<Integer> getSubs() {
         return subs;
@@ -45,11 +42,10 @@ public class Epic extends Task {
         return Type.EPIC;
     }
 
-
     @Override
     public String toString() {
         return taskId
-                + "," + type
+                + "," + Type.EPIC
                 + "," + name
                 + "," + status
                 + ",\"" + description

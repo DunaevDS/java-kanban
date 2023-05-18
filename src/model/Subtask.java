@@ -10,16 +10,15 @@ public class Subtask extends Task {
     private final int epicId;
 
     public Subtask(int taskId,
-                   Type type,
                    String name,
                    Status status,
                    String description,
                    int epicId) {
-        super(taskId,type,name,status, description);
+        super(taskId,name,status, description);
         this.epicId = epicId;
-        this.type = Type.SUBTASK;
     }
 
+    @Override
     public int getEpicId() {
         return epicId;
     }
@@ -29,15 +28,13 @@ public class Subtask extends Task {
         return Type.SUBTASK;
     }
 
-
     @Override
     public  String toString(){
         return  taskId
-                + "," + type
+                + "," + Type.SUBTASK
                 + "," + name
                 + "," + status
                 + ",\"" + description
                 + "\"," + epicId;
     }
-
-    }
+}
