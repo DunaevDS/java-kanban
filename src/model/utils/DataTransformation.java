@@ -7,6 +7,8 @@ import model.Task;
 import model.enums.Status;
 import model.enums.Type;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,15 +27,17 @@ public class DataTransformation {
         String name = st[2];
         Status status = Status.valueOf(st[3]);
         String description = st[4].substring(1, st[4].length() - 1);
+        LocalDateTime startTime = LocalDateTime.parse(st[5]);
+        long duration = Long.parseLong(st[6]);
 
         switch (type) {
             case TASK:
-                return new Task(id, name, status, description);
+                return new Task(id, name, status, description, startTime, duration);
             case EPIC:
-                return new Epic(id, name, status, description);
+                return new Epic(id, name, status, description, startTime, duration);
             case SUBTASK: {
-                epicID = Integer.parseInt(st[5]);
-                return new Subtask(id, name, status, description, epicID);
+                epicID = Integer.parseInt(st[7]);
+                return new Subtask(id, name, status, description, startTime, duration, epicID);
             }
             default:
                 throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);

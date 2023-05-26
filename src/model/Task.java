@@ -3,21 +3,31 @@ package model;
 import model.enums.Status;
 import model.enums.Type;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 public class Task {
     protected int taskId;
     protected String name;
     protected String description;
     protected Status status;
+    protected long duration;
+    protected LocalDateTime startTime;
 
     public Task(int taskId,
                 String name,
                 Status status,
-                String description
+                String description,
+                LocalDateTime startTime,
+                long duration
+
     ) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.taskId = taskId;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public int getTaskId() {
@@ -56,9 +66,23 @@ public class Task {
         return Type.TASK;
     }
 
-    public int getEpicId () {
+    public int getEpicId() {
         return -1;
     }
+
+    public LocalDateTime getStartTime() {
+
+        return startTime;
+
+    }
+    public LocalDateTime getEndTime() {
+
+        final int SECONDS_IN_ONE_MINUTE = 60;
+
+        return startTime.plusSeconds(duration * SECONDS_IN_ONE_MINUTE);
+
+    }
+
 
     @Override
     public String toString() {
@@ -67,6 +91,8 @@ public class Task {
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                + "\"";
+                + "\"" + getStartTime()
+                + "," + duration
+                + "," + getEndTime();
     }
 }

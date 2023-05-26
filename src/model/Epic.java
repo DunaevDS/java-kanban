@@ -2,19 +2,25 @@ package model;
 
 import model.enums.Status;
 import model.enums.Type;
+import java.time.Instant;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
     private final ArrayList<Integer> subs;
+    private LocalDateTime endTime = LocalDateTime.now();
 
     public Epic(int id,
                 String name,
                 Status status,
-                String description) {
-        super(id, name, status, description);
+                String description,
+                LocalDateTime startTime,
+                long duration) {
+        super(id, name, status, description, startTime, duration);
         this.subs = new ArrayList<>();
+        this.endTime = getEndTime();
     }
 
     public ArrayList<Integer> getSubs() {

@@ -3,7 +3,7 @@ package model;
 import model.enums.Status;
 import model.enums.Type;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class Subtask extends Task {
 
@@ -13,8 +13,10 @@ public class Subtask extends Task {
                    String name,
                    Status status,
                    String description,
+                   LocalDateTime startTime,
+                   long duration,
                    int epicId) {
-        super(taskId,name,status, description);
+        super(taskId, name, status, description, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -35,6 +37,9 @@ public class Subtask extends Task {
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                + "\"," + epicId;
+                + "\"," + getStartTime()
+                + "," + duration
+                + "," + epicId;
+
     }
 }

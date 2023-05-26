@@ -8,6 +8,8 @@ import model.Task;
 import model.enums.Status;
 import model.enums.Type;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,20 +32,37 @@ public class InMemoryTaskManager implements TaskManager {
         this.id = id;
     }
 
-    // ниже основные методы для создания задач.
-
-    //Task task1 = fileBackedTasksManager.createTask(fileBackedTasksManager.newTask());
-    // Здесь создается новая таска и потом она поступает в createTask у Бэк менеджера.
     protected Task newTask() {
-        return new Task(0,  "Task", Status.NEW, "Description,task1");
+        return new Task(
+                0,
+                "Task",
+                Status.NEW,
+                "Description,task1",
+                LocalDateTime.now(),
+                0
+        );
     }
 
     protected Epic newEpic() {
-        return new Epic(0, "Epic", Status.NEW, "Description_epic1");
+        return new Epic(
+                0,
+                "Epic",
+                Status.NEW,
+                "Description_epic1",
+                LocalDateTime.now(),
+                0
+        );
     }
 
     protected Subtask newSubtask(Epic epic) {
-        return new Subtask(0, "Subtask", Status.NEW, "Subtask1", epic.getTaskId());
+        return new Subtask(0,
+                "Subtask",
+                Status.NEW,
+                "Subtask1",
+                LocalDateTime.now(),
+                0,
+                epic.getTaskId()
+        );
     }
 
     @Override
