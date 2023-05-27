@@ -2,7 +2,6 @@ package model;
 
 import model.enums.Status;
 import model.enums.Type;
-import java.time.Instant;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     private final ArrayList<Integer> subs;
-    private LocalDateTime endTime = LocalDateTime.now();
+    private LocalDateTime endTime;
 
     public Epic(int id,
                 String name,
@@ -46,6 +45,23 @@ public class Epic extends Task {
     @Override
     public Type getType(){
         return Type.EPIC;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     @Override

@@ -75,6 +75,15 @@ public class Task {
         return startTime;
 
     }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public LocalDateTime getEndTime() {
 
         final int SECONDS_IN_ONE_MINUTE = 60;
