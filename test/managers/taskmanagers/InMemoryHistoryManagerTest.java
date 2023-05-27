@@ -6,7 +6,6 @@ import model.Task;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +60,6 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void removeAllTasksTest() {
-
         Task task1 = new Task(
                 1,
                 "Task1", Status.NEW,
@@ -99,7 +97,6 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void removeTask() {
-
         Task task1 = new Task(
                 1,
                 "Task1", Status.NEW,
@@ -134,8 +131,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void noDuplicatesTest() {
-
+    public void noReplicaWhenCreateTasks() {
         Task task1 = new Task(
                 1,
                 "Task1", Status.NEW,
@@ -163,8 +159,6 @@ public class InMemoryHistoryManagerTest {
         manager.add(task2);
         manager.add(task3);
         manager.add(task1);
-        manager.add(task2);
-        manager.add(task3);
         manager.add(task2);
         manager.add(task3);
 
@@ -173,8 +167,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void noTaskRemoveIfIncorrectIDTest() {
-
+    public void noTaskRemoveIfWrongID() {
         Task task1 = new Task(
                 1,
                 "Task1", Status.NEW,
@@ -202,9 +195,9 @@ public class InMemoryHistoryManagerTest {
         manager.add(task2);
         manager.add(task3);
 
-        manager.remove(42);
-        manager.remove(17);
-        manager.remove(9);
+        manager.remove(4);
+        manager.remove(20);
+        manager.remove(0);
 
         assertEquals(List.of(task1, task2, task3), manager.getHistory());
 

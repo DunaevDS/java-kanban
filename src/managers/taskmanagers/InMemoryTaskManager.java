@@ -2,27 +2,32 @@ package managers.taskmanagers;
 
 import managers.Managers;
 import managers.historymanagers.HistoryManager;
+import managers.taskmanagers.exceptions.IntersectionException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
 import model.enums.Type;
+import model.utils.TaskComparator;
 
-import java.time.Instant;
+
+import java.util.stream.IntStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final TaskComparator taskComparator = new TaskComparator();
+    protected final Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
+
     protected static HistoryManager historyManager = Managers.getDefaultHistory();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
+
+
 
     private int getNextId() {
         return ++id;
@@ -352,5 +357,38 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
+
+    // TreeSet => ArrayList
+    public ArrayList<Task> getPrioritizedTasks() {
+        return new ArrayList<Task>(prioritizedTasks);
+    }
+
+    private void addToPrioritizedTasks(Task task) {
+        prioritizedTasks.add(task);
+        checkIntersection();
+    }
+
+    // проверка на пересечение
+    private void checkIntersection() {
+        ArrayList<Task> prioritizedTasks = getPrioritizedTasks();
+        IntStream.range(1, prioritizedTasks.size())
+                .forEach(i -> {
+                    Task prioritizedTask = prioritizedTasks.get(i);
+                    if (prioritizedTask.getStartTime().isBefore(prioritizedTasks.get(i - 1).getEndTime()))
+                        throw new IntersectionException("Пересечение между "
+                                + prioritizedTask
+                                + " и "
+                                + prioritizedTasks.get(i - 1));
+                });
+    }
+
+    // печать приоритетного списка
+    public void printPrioritizedTasks() {
+
+        System.out.println("СПИСОК ПРИОРИТЕТНЫХ ЗАДАЧ: ");
+        prioritizedTasks.forEach(System.out::println);
+
+    }
 }
+
 
