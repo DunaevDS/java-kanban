@@ -66,6 +66,7 @@ public class Task {
         return Type.TASK;
     }
 
+    // метод для получения айди у эпика для сабтаски.
     public int getEpicId() {
         return -1;
     }
@@ -91,7 +92,6 @@ public class Task {
         return startTime.plusSeconds(duration * SECONDS_IN_ONE_MINUTE);
 
     }
-
 
     @Override
     public String toString() {

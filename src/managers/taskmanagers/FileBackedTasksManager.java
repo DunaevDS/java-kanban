@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -249,7 +250,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static void main(String[] args) {
 
         //новый экземпляр объекта FileBackedTasksManager
-        FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
+        // FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
 
 
 /*        System.out.println("Восстановление из истории: ");
@@ -260,7 +261,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         }*/
 
-        Task task1 = manager.createTask(manager.newTask());
+        //Task task1 = manager.createTask(manager.newTask());
 
        /*Task task2 = taskManager.createTask(taskManager.newTask());
 
@@ -269,20 +270,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Subtask subtask = taskManager.createSubtask(taskManager.newSubtask(epic));
 
 
-        System.out.println("------------");
+        System.out.println("------------");*/
 
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
-        taskManager.getSingleTask(2);
+           var task1 = inMemoryTaskManager.createTask(inMemoryTaskManager.newTask());
+           //task1.setDuration(2);
+           task1.setStartTime(LocalDateTime.now().plusHours(2));
+           var epic1 = inMemoryTaskManager.createEpic(inMemoryTaskManager.newEpic());
+           var sub1 = inMemoryTaskManager.createSubtask(inMemoryTaskManager.newSubtask(epic1));
+           sub1.setDuration(2);
 
-        taskManager.getSingleEpic(3);
-
-        taskManager.getSingleTask(1);
-
-        taskManager.getSingleSubtask(4);
-
-        for (Task task : taskManager.getHistory()) {
-            System.out.println(task);
-        }*/
+        inMemoryTaskManager.printPrioritizedTasks();
     }
 }

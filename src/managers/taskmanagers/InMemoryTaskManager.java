@@ -29,7 +29,6 @@ public class InMemoryTaskManager implements TaskManager {
     public static final String ANSI_RESET = "\u001B[0m";
 
 
-
     private int getNextId() {
         return ++id;
     }
@@ -379,7 +378,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // TreeSet => ArrayList
     public ArrayList<Task> getPrioritizedTasks() {
-        return new ArrayList<Task>(prioritizedTasks);
+        return new ArrayList<>(prioritizedTasks);
     }
 
     private void addToPrioritizedTasks(Task task) {
@@ -395,18 +394,21 @@ public class InMemoryTaskManager implements TaskManager {
                     Task prioritizedTask = prioritizedTasks.get(i);
                     if (prioritizedTask.getStartTime().isBefore(prioritizedTasks.get(i - 1).getEndTime()))
                         throw new IntersectionException("Пересечение между "
-                                + prioritizedTask
+                                + prioritizedTask.getName()
+                                + " id = "
+                                + prioritizedTask.getTaskId()
                                 + " и "
-                                + prioritizedTasks.get(i - 1));
+                                + prioritizedTasks.get(i - 1).getName()
+                                + "id = "
+                                + prioritizedTasks.get(i - 1).getTaskId()
+                        );
                 });
     }
 
     // печать приоритетного списка
     public void printPrioritizedTasks() {
-
         System.out.println("СПИСОК ПРИОРИТЕТНЫХ ЗАДАЧ: ");
         prioritizedTasks.forEach(System.out::println);
-
     }
 }
 
