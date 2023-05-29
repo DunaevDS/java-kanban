@@ -7,7 +7,6 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
-import model.enums.Type;
 import model.utils.TaskComparator;
 
 
@@ -212,13 +211,6 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(subtask.getEpicId());
     }
 
-    @Override
-    public Type getType(int id) {
-        if (tasks.get(id) != null) return tasks.get(id).getType();
-        else if (epics.get(id) != null) return epics.get(id).getType();
-        else return subtasks.get(id).getType();
-
-    }
 
 
     @Override
@@ -339,42 +331,50 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicStatus(int id) {
+        LocalDateTime startTime;
+        LocalDateTime endTime;
         Epic epic = epics.get(id);
         if (epic == null) {
             throw new NullPointerException(ANSI_RED + "Epic is null" + ANSI_RESET);
         } else {
-            LocalDateTime startTime = subtasks.get(epic.getSubs().get(0)).getStartTime();
-            LocalDateTime endTime = subtasks.get(epic.getSubs().get(0)).getEndTime();
-            int counterNew = 0;
-            int counterDone = 0;
-            for (int value : epic.getSubs()) {
-
-                Subtask subtask = subtasks.get(value);
-
-                if (subtask.getStatus() == Status.NEW) counterNew++;
-                if (subtask.getStatus() == Status.DONE) counterDone++;
-
-                if (subtask.getStartTime().isBefore(startTime))
-                    startTime = subtask.getStartTime();
-
-                if (subtask.getEndTime().isAfter(endTime))
-                    endTime = subtask.getEndTime();
-
+            if (epic.getSubs().size() == 0) {
+                startTime = endTime = LocalDateTime.now();
+            } else {
+                startTime = subtasks.get(epic.getSubs().get(0)).getStartTime();
+                endTime = subtasks.get(epic.getSubs().get(0)).getEndTime();
             }
-            epic.setStartTime(startTime);
-            epic.setEndTime(endTime);
-            epic.setDuration(Duration.between(startTime, endTime).toMinutes());
+                int counterNew = 0;
+                int counterDone = 0;
+                for (int value : epic.getSubs()) {
 
-            if (epic.getSubs().size() == counterNew) {
-                epic.setStatus(Status.NEW);
-                return;
-            } else if (epic.getSubs().size() == counterDone) {
-                epic.setStatus(Status.DONE);
-                return;
+                    Subtask subtask = subtasks.get(value);
+
+                    if (subtask.getStatus() == Status.NEW) counterNew++;
+                    if (subtask.getStatus() == Status.DONE) counterDone++;
+
+                    if (subtask.getStartTime().isBefore(startTime))
+                        startTime = subtask.getStartTime();
+
+                    if (subtask.getEndTime().isAfter(endTime))
+                        endTime = subtask.getEndTime();
+
+                }
+                epic.setStartTime(startTime);
+                epic.setEndTime(endTime);
+                epic.setDuration(Duration.between(startTime, endTime).toMinutes());
+
+                if (epic.getSubs().size() == 0 && epic.getStatus() != Status.NEW) {
+                    return;
+                } else if (epic.getSubs().size() == counterNew) {
+                    epic.setStatus(Status.NEW);
+                    return;
+                } else if (epic.getSubs().size() == counterDone) {
+                    epic.setStatus(Status.DONE);
+                    return;
+                }
+                epic.setStatus(Status.IN_PROGRESS);
             }
-            epic.setStatus(Status.IN_PROGRESS);
         }
-    }
 
     // TreeSet => ArrayList
     public ArrayList<Task> getPrioritizedTasks() {

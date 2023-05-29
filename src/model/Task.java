@@ -5,6 +5,7 @@ import model.enums.Type;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
     protected int taskId;
@@ -77,6 +78,10 @@ public class Task {
 
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
     public void setDuration(long duration) {
         this.duration = duration;
     }
@@ -94,13 +99,26 @@ public class Task {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return taskId == task.taskId && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, name, description, status);
+    }
+
+    @Override
     public String toString() {
         return taskId
                 + "," + Type.TASK
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                + "\"" + getStartTime()
+                + "\"," + getStartTime()
                 + "," + duration
                 + "," + getEndTime();
     }

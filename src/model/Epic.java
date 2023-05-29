@@ -5,6 +5,7 @@ import model.enums.Type;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task {
 
@@ -16,7 +17,8 @@ public class Epic extends Task {
                 Status status,
                 String description,
                 LocalDateTime startTime,
-                long duration) {
+                long duration
+                ) {
         super(id, name, status, description, startTime, duration);
         this.subs = new ArrayList<>();
         this.endTime = getEndTime();
@@ -57,13 +59,29 @@ public class Epic extends Task {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subs, epic.subs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subs);
+    }
+
+    @Override
     public String toString() {
         return taskId
                 + "," + Type.EPIC
                 + "," + name
                 + "," + status
                 + ",\"" + description
-                + "\"";
+                + "\"," + getStartTime()
+                + "," + duration
+                + "," + getEndTime();
     }
 }
 

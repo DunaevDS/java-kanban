@@ -133,10 +133,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return savedSubtask;
     }
 
-    @Override
-    public Type getType(int id) {
-        return super.getType(id);
-    }
 
     protected void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src\\test.csv", StandardCharsets.UTF_8));
@@ -144,7 +140,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             if (br.readLine() == null) {
 
-                String header = "id,type,name,status,description,epic";
+                String header = "id,type,name,status,description,startTime,duration,endTime,epic";
                 bw.write(header);
                 bw.newLine();
 
@@ -159,7 +155,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 tasks.addAll(getAllSubtasks());
 
             String result = tasks.stream()
-                    .map(String::valueOf)
+                    .map(Task::toString)
                     .collect(Collectors.joining("\n"));
 
             String historyLine = DataTransformation.historyToString(historyManager);
@@ -189,13 +185,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             List<Integer> historyLine = DataTransformation.historyFromString(lines[lines.length - 1]);
 
-            for (int i = 1; i < lines.length - 2; i++) {
-
+            for (int i = 1; i < lines.length - 1; i++) {
                 Task task = DataTransformation.fromString(lines[i]);
-
                 Type taskType = task.getType();
 
-                
                 if (task.getTaskId() > counterId)
                     counterId = task.getTaskId();
 
@@ -228,6 +221,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         return taskManager;
     }
+
     private void addTask(Task task, Type taskType) {
         switch (taskType) {
             case TASK: {
@@ -249,38 +243,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
 
-        //новый экземпляр объекта FileBackedTasksManager
-        // FileBackedTasksManager manager = FileBackedTasksManager.load(Path.of("src\\test.csv"));
-
-
-/*        System.out.println("Восстановление из истории: ");
-
-        for (Task task : manager.getHistory()) {
-
-            System.out.println(task);
-
-        }*/
-
-        //Task task1 = manager.createTask(manager.newTask());
-
-       /*Task task2 = taskManager.createTask(taskManager.newTask());
-
-        Epic epic = taskManager.createEpic(taskManager.newEpic());
-
-        Subtask subtask = taskManager.createSubtask(taskManager.newSubtask(epic));
-
-
-        System.out.println("------------");*/
-
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-
-           var task1 = inMemoryTaskManager.createTask(inMemoryTaskManager.newTask());
-           //task1.setDuration(2);
-           task1.setStartTime(LocalDateTime.now().plusHours(2));
-           var epic1 = inMemoryTaskManager.createEpic(inMemoryTaskManager.newEpic());
-           var sub1 = inMemoryTaskManager.createSubtask(inMemoryTaskManager.newSubtask(epic1));
-           sub1.setDuration(2);
-
-        inMemoryTaskManager.printPrioritizedTasks();
     }
 }

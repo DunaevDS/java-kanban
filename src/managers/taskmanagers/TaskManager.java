@@ -76,9 +76,5 @@ public interface TaskManager {
 
     // печать истории
     List<Task> getHistory();
-
-    Type getType(int id);
-
-
 }
 

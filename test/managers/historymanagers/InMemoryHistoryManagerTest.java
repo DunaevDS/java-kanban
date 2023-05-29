@@ -1,4 +1,6 @@
-package managers.taskmanagers;
+package managers.historymanagers;
+
+import org.junit.jupiter.api.Test;
 import managers.historymanagers.HistoryManager;
 import model.enums.Status;
 import managers.Managers;
@@ -9,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InMemoryHistoryManagerTest {
@@ -96,7 +97,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void removeTask() {
+    public void removeTaskTest() {
         Task task1 = new Task(
                 1,
                 "Task1", Status.NEW,
