@@ -22,7 +22,7 @@ public class Epic extends Task {
                 ) {
         super(id, name, status, description, startTime, duration);
         this.subs = new ArrayList<>();
-        this.endTime = null;
+        this.endTime = LocalDateTime.now(); // конец эпика по дефолту без сабтасок это момент его создания или null ?
     }
 
     public List<Integer> getSubs() {

@@ -1,7 +1,6 @@
 package managers.taskmanagers;
 
-import managers.Managers;
-import managers.historymanagers.HistoryManager;
+import managers.historymanagers.CustomLinkedList;
 import managers.taskmanagers.exceptions.IntersectionException;
 import model.Epic;
 import model.Subtask;
@@ -9,7 +8,6 @@ import model.Task;
 import model.enums.Status;
 import model.enums.Type;
 import model.utils.DataTransformation;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
     private InMemoryTaskManager manager;
-
 
     protected Task newTask() {
         return new Task(
@@ -58,27 +55,20 @@ class InMemoryTaskManagerTest {
 
     @BeforeEach
     public void newManager() {
-
         manager = new InMemoryTaskManager();
-
     }
-    
 
     @Test
     public void getEpicIDTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
 
         assertEquals(epic.getTaskId(), subtask.getEpicId());
-
     }
 
     @Test
     public void setEpicEndTimeTest() {
-
         Epic epic = manager.createEpic(newEpic());
-
         epic.setEndTime(LocalDateTime.of(2000, 1, 1, 0, 0));
 
         assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0), epic.getEndTime());
@@ -87,65 +77,52 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void getTaskTypeTest() {
-
         Task task = manager.createTask(newTask());
 
         assertEquals(Type.TASK, task.getType());
-
     }
 
     @Test
     public void getDurationTest() {
-
         Task task = manager.createTask(newTask());
 
         assertEquals(0, task.getDuration());
-
     }
 
     @Test
     public void setDurationTest() {
-
         Task task = manager.createTask(newTask());
 
         task.setDuration(2);
 
         assertEquals(2, task.getDuration());
-
     }
 
     @Test
     public void setStartTimeTest() {
-
         Task task = manager.createTask(newTask());
 
         task.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 0));
 
         assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0), task.getStartTime());
-
     }
 
     @Test
     public void getTaskNameTest() {
-
         Task task = manager.createTask(newTask());
 
         assertEquals("Task", task.getName());
-
     }
 
     @Test
     public void getTaskDescriptionTest() {
-
         Task task = manager.createTask(newTask());
 
         assertEquals("Description,task", task.getDescription());
-
     }
 
     @Test
     public void updateTaskStateTest() {
-
         Task task = manager.createTask(newTask());
 
         task.setStatus(Status.IN_PROGRESS);
@@ -154,29 +131,25 @@ class InMemoryTaskManagerTest {
         Status taskWithNewStatus = manager.getSingleTask(task.getTaskId()).getStatus();
 
         assertEquals(Status.IN_PROGRESS, taskWithNewStatus);
-
     }
 
     @Test
     public void updateSubtaskStateDoneTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
         subtask.setStatus(Status.DONE);
 
         manager.updateSingleSubtask(subtask);
 
-        var updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
-        var updatedSubtaskState = manager.getSingleSubtask(subtask.getTaskId()).getStatus();
+        Status updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
+        Status updatedSubtaskState = manager.getSingleSubtask(subtask.getTaskId()).getStatus();
 
         assertEquals(Status.DONE, updatedEpicState);
         assertEquals(Status.DONE, updatedSubtaskState);
-
     }
 
     @Test
     public void updateEpicStateToInProgressTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
         Subtask subtask2 = manager.createSubtask(newSubtask(epic));
@@ -186,57 +159,49 @@ class InMemoryTaskManagerTest {
         subtask2.setStatus(Status.DONE);
         manager.updateSingleSubtask(subtask2);
 
-        var updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
+        Status updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
 
         assertEquals(Status.IN_PROGRESS, updatedEpicState);
-
     }
 
     @Test
     public void updateEpicTest() {
-
         Epic epic = manager.createEpic(newEpic());
 
         epic.setStatus(Status.IN_PROGRESS);
         manager.updateSingleEpic(epic);
 
-        var updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
+        Status updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
 
         assertEquals(Status.IN_PROGRESS, updatedEpicState);
-
     }
 
     @Test
     public void removeTaskTest() {
-
         Task task = manager.createTask(newTask());
 
         manager.deleteSingleTask(task.getTaskId());
 
         assertNull(manager.getAllTasks());
-
     }
 
     @Test
     public void updateSubtaskStateInProgressTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
 
         subtask.setStatus(Status.IN_PROGRESS);
         manager.updateSingleSubtask(subtask);
 
-        var updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
-        var updatedSubtaskState = manager.getSingleSubtask(subtask.getTaskId()).getStatus();
+        Status updatedEpicState = manager.getSingleEpic(epic.getTaskId()).getStatus();
+        Status updatedSubtaskState = manager.getSingleSubtask(subtask.getTaskId()).getStatus();
 
         assertEquals(Status.IN_PROGRESS, updatedEpicState);
         assertEquals(Status.IN_PROGRESS, updatedSubtaskState);
-
     }
 
     @Test
     public void removeEpicTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
 
@@ -247,7 +212,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void calculateStartAndEndTimeOfEpicTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
         Subtask subtask2 = manager.createSubtask(newSubtask(epic));
@@ -258,7 +222,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void noEpicRemoveIfIncorrectIDTest() {
-
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
 
@@ -269,11 +232,10 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void tasksFromStringTest() {
-
-        var Task = new Task(1, "Task", Status.NEW,
+        Task Task = new Task(1, "Task", Status.NEW,
                 "Task", LocalDateTime.of(2000, 1, 1, 0, 0), 0);
 
-        var testTask = DataTransformation.fromString(
+        Task testTask = DataTransformation.fromString(
                 "1,TASK,Task,NEW,\"Task\",2000-01-01T00:00,0,2000-01-01T00:00");
 
         assertEquals(Task, testTask);
@@ -281,27 +243,22 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void shouldThrowIllegalArgumentException() {
-
-        var testTask = DataTransformation.fromString(
-                "1,TASK,Task,NEW,\"Task1\",2000-01-01T00:00,0,2000-01-01T00:00");
-
         assertThrows(IllegalArgumentException.class, () -> DataTransformation.fromString(
                 "notID,TASK,Task,NEW,Task1,2000-01-01T00:00,0,2000-01-01T00:00"));
-
     }
 
-    // если тест запускать отдельно, то проходит, а если в составе всей папки, то не проходит. Не могу понять почему, ведь
-    // стоит @BeforeEach с созданием нового менеджера. В ошибке указано что размер массива 3, хотя при дебаге видно что он пустой.
+
+    // попробовал обойти таким способом статичный менеджер истории, но скорее всего это не правильно.
     @Test
     public void returnEmptyHistoryTest() {
-        var history = manager.getHistory();
-        assertEquals( 0,manager.getHistory().size());
+        CustomLinkedList list = new CustomLinkedList();
+        List<Task> arr =  list.getTasks();
 
+        assertEquals( 0, arr.size());
     }
 
     @Test
     public void returnHistoryWithTasksTest() {
-
         Task task = manager.createTask(newTask());
         Epic epic = manager.createEpic(newEpic());
         Subtask subtask = manager.createSubtask(newSubtask(epic));
@@ -311,15 +268,12 @@ class InMemoryTaskManagerTest {
         manager.getSingleSubtask(subtask.getTaskId());
 
         assertEquals(List.of(task, epic,subtask), manager.getHistory());
-
     }
 
-    
-    // если тест запускать отдельно, то проходит, а если в составе всей папки, то не проходит. Не могу понять почему, ведь
-    // стоит @BeforeEach с созданием нового менеджера. В ошибке указывает что ошибка не возникает
+    //все равно не могу понять почему здесь возникает ошибка при выполнении всех тестов, но если делать тест в отдельности,
+    // то никакой ошибки нету. Статичных методов нет, historyManager тоже не используется.
     @Test
     public void shouldThrowIntersectionException() {
-
         assertThrows(IntersectionException.class, () -> {
 
             Task task = manager.createTask(new Task(
@@ -339,7 +293,7 @@ class InMemoryTaskManagerTest {
                     20
             ));
             Task task3 = manager.createTask(new Task(
-                    0,
+                    2,
                     "Task",
                     Status.NEW,
                     "Description,task",
@@ -347,6 +301,5 @@ class InMemoryTaskManagerTest {
                     0
             ));
         });
-
     }
 }

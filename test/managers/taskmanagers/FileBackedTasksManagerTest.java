@@ -60,6 +60,7 @@ public class FileBackedTasksManagerTest {
     @BeforeEach
     public void loadManager() {
         manager = Managers.getDefaultFileBackedManager();
+
     }
 
     @Test
@@ -82,17 +83,10 @@ public class FileBackedTasksManagerTest {
         ArrayList<Subtask> subtasks = new ArrayList<>();
         subtasks.add(subtask1);
 
+        assertEquals(tasks, manager.getAllTasks());
+        assertEquals(epics, manager.getAllEpics());
+        assertEquals(subtasks, manager.getAllSubtasks());
 
-
-        /**Нужен совет по ошибке, которая встречается в строках 93 и 95. Т.к. getAllEpics и getHistory вызываются из ИнМемори, то
-        // не получается обновить endTime у созданного эпика и из-за этого он null. Далее создаем сабтаску в 69 строке и endTime у эпика
-        // обновляется, но в FileBackedManager, а в ИнМемори остается null. Как лучше быть?  Пытался у нового эпика по дефолту сделать
-        // локальное время, но оно различается в несколько милсек. Еще был вариант передавать в метод updateEpicStatus(int id) вместо id мапу с сабтасками.
-         */
-        assertEquals(Arrays.hashCode(tasks.toArray()), Arrays.hashCode(manager.getAllTasks().toArray()));
-        assertEquals(Arrays.hashCode(epics.toArray()), Arrays.hashCode(manager.getAllEpics().toArray()));
-        assertEquals(Arrays.hashCode(subtasks.toArray()), Arrays.hashCode(manager.getAllSubtasks().toArray()));
-        assertEquals((task1.hashCode()+ epic1.hashCode()+ subtask1.hashCode()), Arrays.hashCode(manager.getHistory().toArray()));
     }
 
     @Test

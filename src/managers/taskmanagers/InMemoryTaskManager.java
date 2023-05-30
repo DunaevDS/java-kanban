@@ -401,8 +401,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void checkIntersection(Task task) {
         List<Task> prioritizedTasks = getPrioritizedTasks();
         prioritizedTasks.forEach(t -> {
-             //if (t.getStartTime().isBefore(prioritizedTasks.get(t.getTaskId() - 1).getEndTime())
-                    if (task.getStartTime().isBefore(t.getEndTime()))
+            if (task.getStartTime().isBefore(t.getEndTime()))
                 throw new IntersectionException("Пересечение между "
                         + t.getName()
                         + " id = "

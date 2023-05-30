@@ -67,11 +67,6 @@ public class Task {
         return Type.TASK;
     }
 
-    // метод для получения айди у эпика для сабтаски.
-    public int getEpicId() {
-        return -1;
-    }
-
     public LocalDateTime getStartTime() {
         return startTime;
     }
