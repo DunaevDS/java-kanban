@@ -81,5 +81,7 @@ public interface TaskManager {
     List<Task> getPrioritizedTasks();
 
     void printPrioritizedTasks();
+
+    void removeEverything();
 }
 

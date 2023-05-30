@@ -420,6 +420,17 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("СПИСОК ПРИОРИТЕТНЫХ ЗАДАЧ: ");
         prioritizedTasks.forEach(System.out::println);
     }
+
+    @Override
+    public void removeEverything() {
+
+        prioritizedTasks.clear();
+        historyManager.clear();
+        subtasks.clear();
+        epics.clear();
+        tasks.clear();
+
+    }
 }
 
 

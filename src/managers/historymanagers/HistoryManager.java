@@ -14,4 +14,7 @@ public interface HistoryManager {
 
     // получение истории
     List<Task> getHistory();
+
+    // полная очистка истории
+    void clear();
 }

@@ -1,6 +1,5 @@
 package managers.taskmanagers;
 
-import managers.historymanagers.CustomLinkedList;
 import managers.taskmanagers.exceptions.IntersectionException;
 import model.Epic;
 import model.Subtask;
@@ -8,6 +7,7 @@ import model.Task;
 import model.enums.Status;
 import model.enums.Type;
 import model.utils.DataTransformation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ class InMemoryTaskManagerTest {
 
     private InMemoryTaskManager manager;
 
-    protected Task newTask() {
+    private Task newTask() {
         return new Task(
                 0,
                 "Task",
@@ -31,7 +31,7 @@ class InMemoryTaskManagerTest {
         );
     }
 
-    protected Epic newEpic() {
+    private Epic newEpic() {
         return new Epic(
                 0,
                 "Epic",
@@ -42,7 +42,7 @@ class InMemoryTaskManagerTest {
         );
     }
 
-    protected Subtask newSubtask(Epic epic) {
+    private Subtask newSubtask(Epic epic) {
         return new Subtask(0,
                 "Subtask",
                 Status.NEW,
@@ -248,13 +248,14 @@ class InMemoryTaskManagerTest {
     }
 
 
-    // попробовал обойти таким способом статичный менеджер истории, но скорее всего это не правильно.
+    // 2 способа обхода нашел, но первый, который закомментировал, вроде бы неправильный костыль...или правильный?
     @Test
     public void returnEmptyHistoryTest() {
-        CustomLinkedList list = new CustomLinkedList();
+/*      CustomLinkedList list = new CustomLinkedList();
         List<Task> arr =  list.getTasks();
+        assertEquals( 0, arr.size());*/
 
-        assertEquals( 0, arr.size());
+        assertEquals( 0,manager.getHistory().size());
     }
 
     @Test
@@ -271,7 +272,7 @@ class InMemoryTaskManagerTest {
     }
 
     //все равно не могу понять почему здесь возникает ошибка при выполнении всех тестов, но если делать тест в отдельности,
-    // то никакой ошибки нету. Статичных методов нет, historyManager тоже не используется.
+    // то никакой ошибки нету. Статичных методов нет, historyManager тоже не используется, очистку всего делаю после каждого метода
     @Test
     public void shouldThrowIntersectionException() {
         assertThrows(IntersectionException.class, () -> {
@@ -301,5 +302,10 @@ class InMemoryTaskManagerTest {
                     0
             ));
         });
+    }
+
+    @AfterEach
+    public void clean(){
+        manager.removeEverything();
     }
 }

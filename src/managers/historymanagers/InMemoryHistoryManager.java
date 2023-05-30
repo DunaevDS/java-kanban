@@ -38,4 +38,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         return historyManager.getTasks();
     }
+
+    @Override
+    public void clear(){
+        history.clear();
+        historyManager.clear();
+    }
 }

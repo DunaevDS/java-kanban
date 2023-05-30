@@ -61,4 +61,8 @@ public class CustomLinkedList {
         size--;
     }
 
+    public void clear() {
+        head = null;
+        tail = null;
+    }
 }
