@@ -8,11 +8,11 @@ import managers.Managers;
 import model.enums.Type;
 import model.utils.DataTransformation;
 
+// когда раскрываю и записываю FileReader/FileWrite, BufferReader/BufferWriter , то идея автоматом заменяет их на import java.io.*
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -236,12 +236,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             case SUBTASK: {
                 Subtask subtask = (Subtask) task;
                 subtasks.put(task.getTaskId(),subtask);
+
+                Epic epic = epics.get(subtask.getEpicId());
+
+                epic.addSubtask(task.getTaskId());
+                updateSingleEpic(epic);
                 break;
             }
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }

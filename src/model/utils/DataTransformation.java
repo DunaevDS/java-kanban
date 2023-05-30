@@ -19,7 +19,7 @@ public class DataTransformation {
 
     //преобразование из строки
     public static Task fromString(String value) {
-        int epicID = 0;
+        int epicId = 0;
         String[] st = value.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         int id = Integer.parseInt(st[0]);
         Type type = Type.valueOf(st[1]);
@@ -35,8 +35,8 @@ public class DataTransformation {
             case EPIC:
                 return new Epic(id, name, status, description, startTime, duration);
             case SUBTASK: {
-                epicID = Integer.parseInt(st[8].substring(0,st[8].length()-1));
-                return new Subtask(id, name, status, description, startTime, duration, epicID);
+                epicId = Integer.parseInt(st[8].substring(0,st[8].length()-1));
+                return new Subtask(id, name, status, description, startTime, duration, epicId);
             }
             default:
                 throw new IllegalArgumentException(ANSI_RED + "----> Передана неверная строка <----" + ANSI_RESET);

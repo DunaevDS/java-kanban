@@ -328,17 +328,24 @@ class InMemoryTaskManagerTest {
                     Status.NEW,
                     "Description,task",
                     LocalDateTime.now(),
+                    0
+            ));
+            Task task2 = manager.createTask(new Task(
+                    1,
+                    "Task",
+                    Status.NEW,
+                    "Description,task",
+                    LocalDateTime.now(),
                     20
             ));
-            manager.createTask(new Task(
-                    1,
+            Task task3 = manager.createTask(new Task(
+                    0,
                     "Task",
                     Status.NEW,
                     "Description,task",
                     LocalDateTime.now(),
                     0
             ));
-
         });
 
     }

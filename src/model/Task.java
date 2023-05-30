@@ -73,9 +73,7 @@ public class Task {
     }
 
     public LocalDateTime getStartTime() {
-
         return startTime;
-
     }
 
     public long getDuration() {
@@ -91,11 +89,7 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-
-        final int SECONDS_IN_ONE_MINUTE = 60;
-
-        return startTime.plusSeconds(duration * SECONDS_IN_ONE_MINUTE);
-
+        return startTime.plusMinutes(duration);
     }
 
     @Override
@@ -103,12 +97,24 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return taskId == task.taskId && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return taskId == task.taskId
+                && duration == task.duration
+                && Objects.equals(name, task.name)
+                && Objects.equals(description, task.description)
+                && status == task.status
+                && Objects.equals(startTime, task.startTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskId, name, description, status);
+        return Objects.hash(
+                taskId,
+                name,
+                description,
+                status,
+                duration,
+                startTime
+        );
     }
 
     @Override

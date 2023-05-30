@@ -90,9 +90,9 @@ public class FileBackedTasksManagerTest {
         // локальное время, но оно различается в несколько милсек. Еще был вариант передавать в метод updateEpicStatus(int id) вместо id мапу с сабтасками.
          */
         assertEquals(Arrays.hashCode(tasks.toArray()), Arrays.hashCode(manager.getAllTasks().toArray()));
-        //assertEquals(Arrays.hashCode(epics.toArray()), Arrays.hashCode(manager.getAllEpics().toArray()));
+        assertEquals(Arrays.hashCode(epics.toArray()), Arrays.hashCode(manager.getAllEpics().toArray()));
         assertEquals(Arrays.hashCode(subtasks.toArray()), Arrays.hashCode(manager.getAllSubtasks().toArray()));
-        //assertEquals((task1.hashCode()+ epic1.hashCode()+ subtask1.hashCode()), Arrays.hashCode(manager.getHistory().toArray()));
+        assertEquals((task1.hashCode()+ epic1.hashCode()+ subtask1.hashCode()), Arrays.hashCode(manager.getHistory().toArray()));
     }
 
     @Test

@@ -5,6 +5,7 @@ import model.enums.Type;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
@@ -21,10 +22,10 @@ public class Epic extends Task {
                 ) {
         super(id, name, status, description, startTime, duration);
         this.subs = new ArrayList<>();
-        this.endTime = getEndTime();
+        this.endTime = null;
     }
 
-    public ArrayList<Integer> getSubs() {
+    public List<Integer> getSubs() {
         return subs;
     }
 
@@ -38,10 +39,6 @@ public class Epic extends Task {
 
     public void removeAllSubtasks() {
         subs.clear();
-    }
-
-    public void updateSubtask(int id) {
-        subs.set(subs.indexOf(id), id);
     }
 
     @Override

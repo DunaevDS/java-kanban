@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 import model.enums.Type;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -76,5 +77,9 @@ public interface TaskManager {
 
     // печать истории
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
+
+    void printPrioritizedTasks();
 }
 
