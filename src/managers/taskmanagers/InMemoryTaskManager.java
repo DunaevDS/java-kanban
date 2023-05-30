@@ -13,6 +13,7 @@ import model.utils.TaskComparator;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
@@ -389,7 +390,9 @@ public class InMemoryTaskManager implements TaskManager {
     // TreeSet => ArrayList
     @Override
     public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(prioritizedTasks);
+        return prioritizedTasks.stream()
+                .sorted(Comparator.nullsLast(taskComparator))
+                .collect(Collectors.toList());
     }
 
     private void addToPrioritizedTasks(Task task) {
