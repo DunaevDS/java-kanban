@@ -35,7 +35,7 @@ public class DataTransformation {
             case EPIC:
                 return new Epic(id, name, status, description, startTime, duration);
             case SUBTASK: {
-                epicId = Integer.parseInt(st[8].substring(0,st[8].length()-1));
+                epicId = Integer.parseInt(st[8]);
                 return new Subtask(id, name, status, description, startTime, duration, epicId);
             }
             default:

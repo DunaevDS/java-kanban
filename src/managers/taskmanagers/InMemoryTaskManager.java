@@ -405,7 +405,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> prioritizedTasks = getPrioritizedTasks();
         prioritizedTasks.forEach(t -> {
             if (task.getStartTime().isBefore(t.getEndTime())
-                    || t.getEndTime().isBefore(task.getStartTime()))
+                    && task.getEndTime().isAfter(t.getStartTime()))
                 throw new IntersectionException("Пересечение между "
                         + t.getName()
                         + " id = "
@@ -427,13 +427,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEverything() {
-
         prioritizedTasks.clear();
         historyManager.clear();
         subtasks.clear();
         epics.clear();
         tasks.clear();
-
     }
 }
 

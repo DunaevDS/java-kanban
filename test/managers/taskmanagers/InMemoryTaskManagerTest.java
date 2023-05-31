@@ -275,7 +275,7 @@ class InMemoryTaskManagerTest {
                     "Task",
                     Status.NEW,
                     "Description,task",
-                    LocalDateTime.now(),
+                    LocalDateTime.of(2023,5,31,12,0),
                     0
             ));
             Task task2 = manager.createTask(new Task(
@@ -283,16 +283,16 @@ class InMemoryTaskManagerTest {
                     "Task",
                     Status.NEW,
                     "Description,task",
-                    LocalDateTime.now(),
-                    20
+                    LocalDateTime.of(2023,5,31,13,0),
+                    30
             ));
             Task task3 = manager.createTask(new Task(
                     2,
                     "Task",
                     Status.NEW,
                     "Description,task",
-                    LocalDateTime.now(),
-                    0
+                    LocalDateTime.of(2023,5,31,13,10),
+                    5
             ));
         });
     }

@@ -156,7 +156,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             String result = tasks.stream()
                     .map(Task::toString)
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\r\n"));
 
             String historyLine = DataTransformation.historyToString(historyManager);
 
@@ -181,7 +181,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             String fileName = Files.readString(filePath);
 
-            String[] lines = fileName.split("\n");
+            String[] lines = fileName.split("\r\n");
 
             List<Integer> historyLine = DataTransformation.historyFromString(lines[lines.length - 1]);
 
