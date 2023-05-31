@@ -1,5 +1,6 @@
 package managers.taskmanagers;
 
+import managers.historymanagers.HistoryManager;
 import managers.taskmanagers.exceptions.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
@@ -72,7 +73,7 @@ public class FileBackedTasksManagerTest {
         manager.getSingleTask(task1.getTaskId());
         manager.getSingleEpic(epic1.getTaskId());
         manager.getSingleSubtask(subtask1.getTaskId());
-        manager = FileBackedTasksManager.load(filePath);
+        manager = manager.load(filePath);
 
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(task1);
@@ -86,13 +87,12 @@ public class FileBackedTasksManagerTest {
         assertEquals(tasks, manager.getAllTasks());
         assertEquals(epics, manager.getAllEpics());
         assertEquals(subtasks, manager.getAllSubtasks());
-
     }
 
     @Test
     public void shouldThrowManagerSaveExceptionTest() {
         filePath = Path.of("src\\failTest.csv");
 
-        assertThrows(ManagerSaveException.class, () -> FileBackedTasksManager.load(filePath));
+        assertThrows(ManagerSaveException.class, () -> manager.load(filePath));
     }
 }

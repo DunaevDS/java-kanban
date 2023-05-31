@@ -54,7 +54,6 @@ public class DataTransformation {
             }
         if (sb.toString().equals("")) return sb.toString();
         else return sb.substring(0, sb.length() - 1);
-
     }
 
     // история из строки

@@ -2,6 +2,8 @@ package managers.historymanagers;
 
 import model.Epic;
 import model.Subtask;
+import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import model.enums.Status;
 import managers.Managers;
@@ -20,19 +22,27 @@ public class InMemoryHistoryManagerTest {
     private final List<Task> emptyList = new ArrayList<>();
     private HistoryManager manager;
 
+    private Task task1;
+    private Task task2;
+    private Task task3;
+    private Task epic1;
+    private Task epic2;
+    private Task subtask1;
+    private Task subtask2;
+
     @BeforeEach
     public void initializeManagerTasksEpicsSubtasks() {
 
         manager = Managers.getDefaultHistory();
 
-        Task task1 = new Task(
+        task1 = new Task(
                 1,
                 "Task1", Status.NEW,
                 "Task1",
                 LocalDateTime.now(),
                 0
         );
-        Task task2 = new Task(
+        task2 = new Task(
                 2,
                 "Task2",
                 Status.NEW,
@@ -40,7 +50,7 @@ public class InMemoryHistoryManagerTest {
                 LocalDateTime.now(),
                 0
         );
-        Task task3 = new Task(
+        task3 = new Task(
                 3,
                 "Task3",
                 Status.NEW,
@@ -48,7 +58,7 @@ public class InMemoryHistoryManagerTest {
                 LocalDateTime.now(),
                 0);
 
-        Epic epic1 = new Epic(
+       epic1 = new Epic(
                 4,
                 "Epic",
                 Status.NEW,
@@ -57,7 +67,7 @@ public class InMemoryHistoryManagerTest {
                 0
         );
 
-        Epic epic2 = new Epic(
+        epic2 = new Epic(
                 5,
                 "Epic",
                 Status.NEW,
@@ -66,7 +76,7 @@ public class InMemoryHistoryManagerTest {
                 0
         );
 
-        Subtask subtask1 = new Subtask(
+        subtask1 = new Subtask(
                 6,
                 "Subtask",
                 Status.NEW,
@@ -76,7 +86,7 @@ public class InMemoryHistoryManagerTest {
                 epic1.getTaskId()
         );
 
-        Subtask subtask2 = new Subtask(
+        subtask2 = new Subtask(
                 7,
                 "Subtask",
                 Status.NEW,
@@ -85,19 +95,13 @@ public class InMemoryHistoryManagerTest {
                 0,
                 epic1.getTaskId()
         );
-
         manager.add(task1);
         manager.add(task2);
         manager.add(task3);
-
         manager.add(epic1);
         manager.add(epic2);
-
         manager.add(subtask1);
         manager.add(subtask2);
-
-        epic1.addSubtask(6);
-        epic1.addSubtask(7);
     }
 
     @Test
@@ -110,9 +114,10 @@ public class InMemoryHistoryManagerTest {
         Epic epic2 = (Epic) manager.getHistory().get(4);
         Subtask subtask1 = (Subtask) manager.getHistory().get(5);
         Subtask subtask2 = (Subtask) manager.getHistory().get(6);
+        epic1.addSubtask(4);
+        epic1.addSubtask(5);
 
         assertEquals(List.of(task1, task2, task3, epic1, epic2, subtask1, subtask2), manager.getHistory());
-
     }
 
     @Test
@@ -125,7 +130,8 @@ public class InMemoryHistoryManagerTest {
         Epic epic2 = (Epic) manager.getHistory().get(4);
         Subtask subtask1 = (Subtask) manager.getHistory().get(5);
         Subtask subtask2 = (Subtask) manager.getHistory().get(6);
-
+        epic1.addSubtask(4);
+        epic1.addSubtask(5);
 
         manager.remove(task1.getTaskId());
         manager.remove(task2.getTaskId());
@@ -136,7 +142,6 @@ public class InMemoryHistoryManagerTest {
         manager.remove(subtask2.getTaskId());
 
         assertEquals(emptyList, manager.getHistory());
-
     }
 
     @Test
@@ -149,13 +154,14 @@ public class InMemoryHistoryManagerTest {
         Epic epic2 = (Epic) manager.getHistory().get(4);
         Subtask subtask1 = (Subtask) manager.getHistory().get(5);
         Subtask subtask2 = (Subtask) manager.getHistory().get(6);
+        epic1.addSubtask(4);
+        epic1.addSubtask(5);
 
         manager.remove(task2.getTaskId());
         manager.remove(epic2.getTaskId());
         manager.remove(subtask1.getTaskId());
 
         assertEquals(List.of(task1, task3, epic1, subtask2), manager.getHistory());
-
     }
 
     @Test
@@ -168,6 +174,8 @@ public class InMemoryHistoryManagerTest {
         Epic epic2 = (Epic) manager.getHistory().get(4);
         Subtask subtask1 = (Subtask) manager.getHistory().get(5);
         Subtask subtask2 = (Subtask) manager.getHistory().get(6);
+        epic1.addSubtask(4);
+        epic1.addSubtask(5);
 
         manager.add(task1);
         manager.add(task2);
@@ -178,7 +186,6 @@ public class InMemoryHistoryManagerTest {
         manager.add(subtask2);
 
         assertEquals(List.of(task1, task2, task3, epic1, epic2, subtask1, subtask2), manager.getHistory());
-
     }
 
     @Test
@@ -191,14 +198,18 @@ public class InMemoryHistoryManagerTest {
         Epic epic2 = (Epic) manager.getHistory().get(4);
         Subtask subtask1 = (Subtask) manager.getHistory().get(5);
         Subtask subtask2 = (Subtask) manager.getHistory().get(6);
-
+        epic1.addSubtask(4);
+        epic1.addSubtask(5);
 
         manager.remove(8);
         manager.remove(20);
         manager.remove(0);
 
         assertEquals(List.of(task1, task2, task3, epic1, epic2, subtask1, subtask2), manager.getHistory());
-
     }
 
+    @AfterEach
+    public void clear(){
+        manager.clear();
+    }
 }

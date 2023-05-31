@@ -23,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final TaskComparator taskComparator = new TaskComparator();
     protected final Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
 
-    protected static HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
 
@@ -404,7 +404,8 @@ public class InMemoryTaskManager implements TaskManager {
     private void checkIntersection(Task task) {
         List<Task> prioritizedTasks = getPrioritizedTasks();
         prioritizedTasks.forEach(t -> {
-            if (task.getStartTime().isBefore(t.getEndTime()))
+            if (task.getStartTime().isBefore(t.getEndTime())
+                    || t.getEndTime().isBefore(task.getStartTime()))
                 throw new IntersectionException("Пересечение между "
                         + t.getName()
                         + " id = "

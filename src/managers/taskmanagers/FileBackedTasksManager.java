@@ -1,5 +1,6 @@
 package managers.taskmanagers;
 
+import managers.historymanagers.HistoryManager;
 import managers.taskmanagers.exceptions.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
@@ -8,7 +9,6 @@ import managers.Managers;
 import model.enums.Type;
 import model.utils.DataTransformation;
 
-// когда раскрываю и записываю FileReader/FileWrite, BufferReader/BufferWriter , то идея автоматом заменяет их на import java.io.*
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -171,7 +171,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     // загрузка из файла
-    public static FileBackedTasksManager load(Path filePath) {
+    public FileBackedTasksManager load(Path filePath) {
 
         final FileBackedTasksManager taskManager = Managers.getDefaultFileBackedManager();
 
@@ -240,7 +240,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 Epic epic = epics.get(subtask.getEpicId());
 
                 epic.addSubtask(task.getTaskId());
-                updateSingleEpic(epic);
                 break;
             }
         }

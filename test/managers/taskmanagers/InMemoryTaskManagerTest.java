@@ -248,14 +248,9 @@ class InMemoryTaskManagerTest {
     }
 
 
-    // 2 способа обхода нашел, но первый, который закомментировал, вроде бы неправильный костыль...или правильный?
     @Test
     public void returnEmptyHistoryTest() {
-/*      CustomLinkedList list = new CustomLinkedList();
-        List<Task> arr =  list.getTasks();
-        assertEquals( 0, arr.size());*/
-
-        assertEquals( 0,manager.getHistory().size());
+        assertTrue(manager.getHistory().isEmpty());
     }
 
     @Test
@@ -271,8 +266,6 @@ class InMemoryTaskManagerTest {
         assertEquals(List.of(task, epic,subtask), manager.getHistory());
     }
 
-    //все равно не могу понять почему здесь возникает ошибка при выполнении всех тестов, но если делать тест в отдельности,
-    // то никакой ошибки нету. Статичных методов нет, historyManager тоже не используется, очистку всего делаю после каждого метода
     @Test
     public void shouldThrowIntersectionException() {
         assertThrows(IntersectionException.class, () -> {
