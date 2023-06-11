@@ -3,13 +3,13 @@ package managers;
 import managers.historymanagers.HistoryManager;
 import managers.historymanagers.InMemoryHistoryManager;
 import managers.taskmanagers.FileBackedTasksManager;
-import managers.taskmanagers.InMemoryTaskManager;
+import managers.taskmanagers.HttpTaskManager;
 import managers.taskmanagers.TaskManager;
 
 public class Managers {
 
-    public TaskManager getDefault() {
-        return new InMemoryTaskManager();
+    public static TaskManager getDefault() {
+        return new HttpTaskManager();
     }
 
     public static HistoryManager getDefaultHistory() {

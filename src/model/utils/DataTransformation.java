@@ -1,5 +1,8 @@
 package model.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import managers.historymanagers.HistoryManager;
 import model.Epic;
 import model.Subtask;
@@ -8,6 +11,8 @@ import model.enums.Status;
 import model.enums.Type;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,9 +50,7 @@ public class DataTransformation {
 
     // история в строку
     public static String historyToString(HistoryManager manager) {
-
         StringBuilder sb = new StringBuilder();
-
         for (Task task : manager.getHistory())
             if (task != null) {
                 sb.append(task.getTaskId()).append(",");
@@ -58,13 +61,16 @@ public class DataTransformation {
 
     // история из строки
     public static List<Integer> historyFromString(String value) {
-
         List<Integer> history = new LinkedList<>();
-
         for (String element : value.split(","))
             history.add(Integer.parseInt(element));
-
         return history;
+    }
 
+    // создание Gson
+    public static Gson createGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new TypeAdapter())
+                .create();
     }
 }

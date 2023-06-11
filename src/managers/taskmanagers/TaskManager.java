@@ -3,11 +3,8 @@ package managers.taskmanagers;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import model.enums.Type;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
@@ -56,6 +53,8 @@ public interface TaskManager {
 
     // получение одной подзадачи
     Subtask getSingleSubtask(int id);
+
+    Collection<Subtask> getAllSubtasksByEpicId(int id);
 
     // обновление одной задачи
     Task updateSingleTask(Task task);

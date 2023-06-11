@@ -98,7 +98,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Collection<Task> getAllTasks() {
         if (tasks.isEmpty()) {
-            System.out.println(ANSI_RED + "------> No tasks <------" + ANSI_RESET);
             return null;
         }
         return new ArrayList<>(tasks.values());
@@ -108,7 +107,6 @@ public class InMemoryTaskManager implements TaskManager {
     public Collection<Epic> getAllEpics() {
 
         if (epics.isEmpty()) {
-            System.out.println(ANSI_RED + "------> No epics <------" + ANSI_RESET);
             return null;
         }
         return new ArrayList<>(epics.values());
@@ -118,7 +116,6 @@ public class InMemoryTaskManager implements TaskManager {
     public Collection<Subtask> getAllSubtasks() {
 
         if (subtasks.isEmpty()) {
-            System.out.println(ANSI_RED + "------> No subtasks <------" + ANSI_RESET);
             return null;
         }
         return new ArrayList<>(subtasks.values());
@@ -198,7 +195,6 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
 
         if (subtask == null) {
-            System.out.println(ANSI_RED + "Subtask ID=" + id + " is not existing" + ANSI_RESET);
             return;
         }
 
@@ -219,7 +215,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(singleTask);
             return singleTask;
         } else {
-            System.out.println(ANSI_RED + "Task is null" + ANSI_RESET);
             return null;
         }
     }
@@ -231,7 +226,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(singleEpic);
             return singleEpic;
         } else {
-            System.out.println(ANSI_RED + "Epic is null" + ANSI_RESET);
             return null;
         }
     }
@@ -240,19 +234,29 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSingleSubtask(int id) {
         Subtask singleSubtask = subtasks.get(id);
         if (singleSubtask != null) {
-
             historyManager.add(singleSubtask);
             return singleSubtask;
         } else {
-            System.out.println(ANSI_RED + "Subtask is null" + ANSI_RESET);
             return null;
         }
+    }
+    @Override
+    public Collection<Subtask> getAllSubtasksByEpicId(int id){
+        Epic singleEpic = epics.get(id);
+        if (singleEpic != null) {
+            historyManager.add(singleEpic);
+            List<Integer> subsList = singleEpic.getSubs();
+            List<Subtask> subs = new ArrayList<>();
+
+            for (Integer value: subsList) {
+                subs.add(getSingleSubtask(value));
+            } return subs;
+        } else return null;
     }
 
     @Override
     public Task updateSingleTask(Task task) {
         if (task == null) {
-            System.out.println(ANSI_RED + "Task is null" + ANSI_RESET);
             return null;
         } else {
             tasks.put(task.getTaskId(), task);
@@ -264,7 +268,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic updateSingleEpic(Epic epic) {
         if (epic == null) {
-            System.out.println(ANSI_RED + "Epic is null" + ANSI_RESET);
             return null;
         } else {
             epics.put(epic.getTaskId(), epic);
@@ -276,7 +279,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask updateSingleSubtask(Subtask subtask) {
         if (subtask == null) {
-            System.out.println(ANSI_RED + "Subtask is null" + ANSI_RESET);
             return null;
         } else {
             subtasks.put(subtask.getTaskId(), subtask);

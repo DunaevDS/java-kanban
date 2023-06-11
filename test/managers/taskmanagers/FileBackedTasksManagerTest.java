@@ -1,6 +1,5 @@
 package managers.taskmanagers;
 
-import managers.historymanagers.HistoryManager;
 import managers.taskmanagers.exceptions.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
@@ -31,7 +30,7 @@ public class FileBackedTasksManagerTest {
                 "Task",
                 Status.NEW,
                 "Description,task1",
-                LocalDateTime.now(),
+                LocalDateTime.of(2023,12,1,1,1),
                 0
         );
     }
@@ -42,7 +41,7 @@ public class FileBackedTasksManagerTest {
                 "Epic",
                 Status.NEW,
                 "Description_epic1",
-                LocalDateTime.now(),
+                LocalDateTime.of(2023,12,1,1,1),
                 0
         );
     }
@@ -52,7 +51,7 @@ public class FileBackedTasksManagerTest {
                 "Subtask",
                 Status.NEW,
                 "Subtask1",
-                LocalDateTime.now(),
+                LocalDateTime.of(2023,12,1,1,1),
                 0,
                 epic.getTaskId()
         );
