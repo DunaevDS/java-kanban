@@ -9,7 +9,7 @@ import java.util.Map;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final CustomLinkedList historyManager;
-    private final Map<Integer, Node<Task>> history;
+    protected final Map<Integer, Node<Task>> history;
 
     public InMemoryHistoryManager() {
         historyManager = new CustomLinkedList();

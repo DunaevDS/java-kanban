@@ -9,10 +9,7 @@ import model.Task;
 import model.utils.DataTransformation;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
@@ -43,6 +40,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     public void load() {
+        int counterId = 0;
         String jsonPrioritizedTasks = client.load("tasks");
         Type prioritizedTaskType = new TypeToken<List<Task>>() {}.getType();
         List<Task> priorityTasks = gson.fromJson(jsonPrioritizedTasks, prioritizedTaskType);
@@ -50,22 +48,34 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
         String gsonHistory = client.load("tasks/history");
         Type historyType = new TypeToken<List<Task>>() {}.getType();
-        List<Task> history = gson.fromJson(gsonHistory, historyType);
-        getHistory().addAll(history);
+        List<Task> historyList = gson.fromJson(gsonHistory, historyType);
+        for (Task task : historyList) {
+            if (task.getTaskId() > counterId) {
+                counterId = task.getTaskId();
+            }
+            historyManager.add(task);
+        }
+        setId(counterId);
 
         String jsonTasks = client.load("tasks/task");
-        Type taskType = new TypeToken<Map<Integer,Task>>() {}.getType();
-        Map<Integer,Task> taskList = gson.fromJson(jsonTasks, taskType);
-        tasks.putAll(taskList);
+        Type taskType = new TypeToken<List<Task>>() {}.getType();
+        List<Task> taskList = gson.fromJson(jsonTasks, taskType);
+        for (Task task : taskList) {
+            tasks.put(task.getTaskId(), task);
+        }
 
         String jsonEpics = client.load("tasks/epic");
-        Type epicType = new TypeToken<Map<Integer, Epic>>() {}.getType();
-        Map<Integer,Epic> epicList = gson.fromJson(jsonEpics, epicType);
-        epics.putAll(epicList);
+        Type epicType = new TypeToken<List<Epic>>() {}.getType();
+        List<Epic> epicList = gson.fromJson(jsonEpics, epicType);
+        for (Epic epic : epicList) {
+            epics.put(epic.getTaskId(), epic);
+        }
 
         String jsonSubtasks = client.load("tasks/subtask");
-        Type subtaskType = new TypeToken<Map<Integer, Subtask>>() {}.getType();
-        Map<Integer, Subtask> subtasksList = gson.fromJson(jsonSubtasks, subtaskType);
-        subtasks.putAll(subtasksList);
+        Type subtaskType = new TypeToken<List<Subtask>>() {}.getType();
+        List<Subtask> subtasksList = gson.fromJson(jsonSubtasks, subtaskType);
+        for (Subtask subtask : subtasksList) {
+            subtasks.put(subtask.getTaskId(), subtask);
+        }
     }
 }
