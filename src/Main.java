@@ -1,10 +1,12 @@
 import managers.Managers;
 import managers.taskmanagers.HttpTaskManager;
+import managers.taskmanagers.InMemoryTaskManager;
 import managers.taskmanagers.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.enums.Status;
+import servers.HttpTaskServer;
 import servers.KVServer;
 
 import java.io.IOException;
@@ -13,11 +15,11 @@ import java.time.LocalDateTime;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        new KVServer().start();
-        TaskManager httpManager = Managers.getDefault();
+/*        new KVServer().start();
+        TaskManager httpManager = Managers.getDefault();*/
 
-/*      InMemoryTaskManager httpManager = new InMemoryTaskManager();  //локальный тест
-        HttpTaskServer manager = new HttpTaskServer(httpManager);*/   //локальный тест
+        InMemoryTaskManager httpManager = new InMemoryTaskManager();  //локальный тест
+        HttpTaskServer manager = new HttpTaskServer(httpManager);   //локальный тест
         Task task1 = httpManager.createTask(new Task(
                 1,
                 "Task",
@@ -85,9 +87,9 @@ public class Main {
                 0,
                 epic1.getTaskId())
         );
-        //manager.start(); локальный тест
+        manager.start(); // локальный тест
 
-        httpManager.getSingleTask(task1.getTaskId());
+/*        httpManager.getSingleTask(task1.getTaskId());
         httpManager.getSingleEpic(epic1.getTaskId());
         httpManager.getSingleSubtask(subtask1.getTaskId());
         httpManager.getHistory();
@@ -97,6 +99,6 @@ public class Main {
         newHttpManager.getPrioritizedTasks();
 
         System.out.println(newHttpManager.getHistory()); // проверка
-        System.out.println(newHttpManager.getPrioritizedTasks()); // проверка
+        System.out.println(newHttpManager.getPrioritizedTasks()); // проверка*/
     }
 }

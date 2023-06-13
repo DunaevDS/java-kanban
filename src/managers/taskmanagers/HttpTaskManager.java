@@ -23,10 +23,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client = new KVTaskClient();
     }
 
-    public KVTaskClient getClient() {
-        return client;
-    }
-
     @Override
     public void save() {
         String prioritizedTasks = gson.toJson(getPrioritizedTasks());
@@ -46,18 +42,17 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     public void load() {
-        String jsonPrioritizedTasks = getClient().load("tasks");
-        Type prioritizedTaskType = new TypeToken<List<Task>>() {}.getType();
-        List<Task> priorityTasks = gson.fromJson(jsonPrioritizedTasks, prioritizedTaskType);
+        String jsonPrioritizedTasks = client.load("tasks");
+        Type prioritizedTaskType = new TypeToken<Collection<Task>>() {}.getType();
+        Collection<Task> priorityTasks = gson.fromJson(jsonPrioritizedTasks, prioritizedTaskType);
         getPrioritizedTasks().addAll(priorityTasks);
 
-        String gsonHistory = getClient().load("tasks/history");
-        Type historyType = new TypeToken<List<Task>>() {
-        }.getType();
+        String gsonHistory = client.load("tasks/history");
+        Type historyType = new TypeToken<List<Task>>() {}.getType();
         List<Task> history = gson.fromJson(gsonHistory, historyType);
         getHistory().addAll(history);
 
-        String jsonTasks = getClient().load("tasks/task");
+        String jsonTasks = client.load("tasks/task");
         Type taskType = new TypeToken<Collection<Task>>() {}.getType();
         Collection<Task> taskList = gson.fromJson(jsonTasks, taskType);
         Collection<Task> tasks = getAllTasks();
@@ -67,7 +62,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             tasks = new ArrayList<Task>(taskList);
         }
 
-        String jsonEpics = getClient().load("tasks/epic");
+        String jsonEpics = client.load("tasks/epic");
         Type epicType = new TypeToken<Collection<Epic>>() {}.getType();
         Collection<Epic> epicList = gson.fromJson(jsonEpics, epicType);
         Collection<Epic> epics = getAllEpics();
@@ -77,7 +72,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             epics = new ArrayList<Epic>(epicList);
         }
 
-        String jsonSubtasks = getClient().load("tasks/subtask");
+        String jsonSubtasks = client.load("tasks/subtask");
         Type subtaskType = new TypeToken<Collection<Subtask>>() {}.getType();
         Collection<Subtask> subtasksList = gson.fromJson(jsonSubtasks, subtaskType);
         Collection<Subtask> subtasks = getAllSubtasks();

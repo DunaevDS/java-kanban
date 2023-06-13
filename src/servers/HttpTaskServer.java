@@ -3,7 +3,6 @@ package servers;
 import managers.taskmanagers.TaskManager;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import model.enums.Endpoint;
 
@@ -29,15 +28,12 @@ public class HttpTaskServer {
     private final TaskManager manager;
     private final HttpServer server;
     private final Gson gson;
-    private String link;
-    private int queryInt;
-    private String query;
 
     public HttpTaskServer(TaskManager manager) throws IOException {
         this.manager = manager;
         server = HttpServer.create();
         server.bind(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks", new TaskHandler());
+        server.createContext("/tasks", this::endpointSearch);
         gson = DataTransformation.createGson();
     }
 
@@ -51,16 +47,9 @@ public class HttpTaskServer {
         System.out.println("HTTP-сервер остановлен на " + PORT + " порту!");
     }
 
-    class TaskHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            link = exchange.getRequestURI().getPath();
-            query = exchange.getRequestURI().getQuery();
-            endpointSearch(exchange);
-        }
-
         private void endpointSearch(HttpExchange exchange) throws IOException {
-            queryInt = getQueryInt(query, queryInt);
+            String link = exchange.getRequestURI().getPath();
+            String query = exchange.getRequestURI().getQuery();
             Endpoint endpoint = getEndpoint(link, exchange.getRequestMethod(), query);
 
             switch (endpoint) {
@@ -73,7 +62,7 @@ public class HttpTaskServer {
                     break;
                 }
                 case GET_TASKS_TASK_ID: {
-                    handleGetTasksById(exchange, queryInt);
+                    handleGetTasksById(exchange);
                     break;
                 }
                 case GET_TASKS_EPIC: {
@@ -81,7 +70,7 @@ public class HttpTaskServer {
                     break;
                 }
                 case GET_TASKS_EPIC_ID: {
-                    handleGetEpicById(exchange, queryInt);
+                    handleGetEpicById(exchange);
                     break;
                 }
                 case GET_TASKS_SUBTASK: {
@@ -89,7 +78,7 @@ public class HttpTaskServer {
                     break;
                 }
                 case GET_TASKS_SUBTASK_EPIC_ID: {
-                    handleGetSubtasksByID(exchange, queryInt);
+                    handleGetSubtasksById(exchange);
                     break;
                 }
                 case GET_TASKS_HISTORY: {
@@ -112,15 +101,15 @@ public class HttpTaskServer {
                     break;
                 }
                 case DELETE_TASKS_TASK_ID: {
-                    handleDeleteTask(exchange, queryInt);
+                    handleDeleteTask(exchange);
                     break;
                 }
                 case DELETE_TASKS_EPIC_ID: {
-                    handleDeleteEpic(exchange, queryInt);
+                    handleDeleteEpic(exchange);
                     break;
                 }
                 case DELETE_TASKS_SUBTASK_ID: {
-                    handleDeleteSubtask(exchange, queryInt);
+                    handleDeleteSubtask(exchange);
                     break;
                 }
                 default:
@@ -128,9 +117,6 @@ public class HttpTaskServer {
             }
         }
 
-        // Мне самому не нравится как в этом методе и в методе выше все нагорожено, но для 1 итерации мне главное понять
-        // правильная ли логика работы. На каникулах в практикуме планирую переписать этот код используя паттерны (на данный
-        // момент не изучал их, но знаю что с ними будет гораздо проще)
         private Endpoint getEndpoint(String requestPath, String requestMethod, String query) {
 
             String[] pathParts = requestPath.split("/");
@@ -215,8 +201,9 @@ public class HttpTaskServer {
             System.out.println("GET: началась обработка /tasks/task запроса от клиента.\n");
             Collection<Task> tasks = manager.getAllTasks();
 
-            //пытался сделать проверку if tasks().isEmpty() и так, но она не отрабатывает почему то
-            if (gson.toJson(tasks).equals("null")) {
+            // ну да, проблема была, естествено, в getAllTasks return null, но насколько помню добавлял return null в каком-то старом
+            // ТЗ по Вашей просьбе, вот решил его и не убирать. Лучше, конечно, без него.
+            if (tasks.isEmpty()) {
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
             } else {
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
@@ -228,7 +215,7 @@ public class HttpTaskServer {
             System.out.println("GET: началась обработка /tasks/epic запроса от клиента.\n");
             Collection<Epic> epics = manager.getAllEpics();
 
-            if (gson.toJson(epics).equals("null")) {
+            if (epics.isEmpty()) {
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
 
             } else {
@@ -241,7 +228,7 @@ public class HttpTaskServer {
             System.out.println("GET: началась обработка /tasks/subtask запроса от клиента.\n");
             Collection<Subtask> subtasks = manager.getAllSubtasks();
 
-            if (gson.toJson(subtasks).equals("null")) {
+            if (subtasks.isEmpty()) {
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
             } else {
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
@@ -249,58 +236,57 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetTasksById(HttpExchange httpExchange, int id) throws IOException {
+        private void handleGetTasksById(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
             System.out.println("GET: началась обработка /tasks/task/?id=" + id + " запроса от клиента.\n");
-            String taskByIDToJson = gson.toJson(manager.getSingleTask(id));
-
-            if (taskByIDToJson.equals("null")) {
+            if (manager.getSingleTask(id) == null){
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
             } else {
+
+                String taskByIDToJson = gson.toJson(manager.getSingleTask(id));
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
                 writeResponse(httpExchange, taskByIDToJson, 200);
             }
-            queryInt = 0; // обнуление, иначе после вызова get history значение будет не 0
         }
 
         private void handleGetHistory(HttpExchange httpExchange) throws IOException {
             System.out.println("GET: началась обработка /tasks/history запроса от клиента.\n");
-            String historyToJson = gson.toJson(manager.getHistory());
-
-            if (manager.getHistory().isEmpty()) {
-                writeResponse(httpExchange, "Request failed", 404);
-            } else {
+            if (!manager.getHistory().isEmpty()) {
+                String historyToJson = gson.toJson(manager.getHistory());
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
                 writeResponse(httpExchange, historyToJson, 200);
+            } else {
+                writeResponse(httpExchange, "Request failed", 404);
             }
         }
 
-        private void handleGetEpicById(HttpExchange httpExchange, int id) throws IOException {
+        private void handleGetEpicById(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
             System.out.println("GET: началась обработка /tasks/epic/?id=" + id + " запроса от клиента.\n");
-            String epicToJson = gson.toJson(manager.getSingleEpic(id));
-
-            if (epicToJson.equals("null")) {
+            if (manager.getSingleEpic(id) == null) {
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
             } else {
+                String epicToJson = gson.toJson(manager.getSingleEpic(id));
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
                 writeResponse(httpExchange, epicToJson, 200);
             }
-            queryInt = 0; // обнуление
         }
 
-        private void handleGetSubtasksByID(HttpExchange httpExchange, int id) throws IOException {
-            System.out.println("GET: началась обработка /tasks/subtask/epic/?id=" + " запроса от клиента.\n");
-            String subtaskEpicToJson = gson.toJson(manager.getAllSubtasksByEpicId(id));
-
-            if (subtaskEpicToJson.equals("null")) {
+        private void handleGetSubtasksById(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
+            System.out.println("GET: началась обработка /tasks/subtask/epic/?id=" +id+ " запроса от клиента.\n");
+            if (manager.getSingleSubtask(id) == null) {
                 writeResponse(httpExchange, "Request failed. Resource not found", 404);
             } else {
+                String subtaskEpicToJson = gson.toJson(manager.getAllSubtasksByEpicId(id));
                 httpExchange.getResponseHeaders().add("Content-Type", "application/json");
                 writeResponse(httpExchange, subtaskEpicToJson, 200);
             }
-            queryInt = 0; // обнуление
         }
 
-        //стоит ли заморачиваться и делать startTime у созданной таски LocalDateTime.now ?
         private void handleCreateTask(HttpExchange httpExchange) throws IOException {
             System.out.println("POST: началась обработка /tasks/task запроса от клиента.\n");
             InputStream inputStream = httpExchange.getRequestBody();
@@ -352,7 +338,9 @@ public class HttpTaskServer {
             writeResponse(httpExchange, "Все таски, эпики и сабтаски удалены.", 200);
         }
 
-        private void handleDeleteTask(HttpExchange httpExchange, int id) throws IOException {
+        private void handleDeleteTask(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
             System.out.println("DELETE: началась обработка /tasks/task/?id=" + id + " запроса от клиента.\n");
 
             if (manager.getSingleTask(id) != null) {
@@ -361,10 +349,11 @@ public class HttpTaskServer {
             } else {
                 writeResponse(httpExchange, "Задача #" + id + " не найдена.\n", 404);
             }
-            queryInt = 0; // обнуление
         }
 
-        private void handleDeleteEpic(HttpExchange httpExchange, int id) throws IOException {
+        private void handleDeleteEpic(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
             System.out.println("DELETE: началась обработка /tasks/epic/?id=" + id + " запроса от клиента.\n");
             if (manager.getSingleEpic(id) != null) {
                 manager.deleteSingleEpic(id);
@@ -373,10 +362,11 @@ public class HttpTaskServer {
             } else {
                 writeResponse(httpExchange, "Задача #" + id + " не найдена.\n", 404);
             }
-            queryInt = 0; // обнуление
         }
 
-        private void handleDeleteSubtask(HttpExchange httpExchange, int id) throws IOException {
+        private void handleDeleteSubtask(HttpExchange httpExchange) throws IOException {
+            String query = httpExchange.getRequestURI().getQuery();
+            int id = getQueryInt(query);
             System.out.println("DELETE: началась обработка /tasks/subtask/?id=" + id + " запроса от клиента.\n");
 
             if (manager.getSingleSubtask(id) != null) {
@@ -386,7 +376,6 @@ public class HttpTaskServer {
             } else {
                 writeResponse(httpExchange, "Задача #" + id + " не найдена.\n", 404);
             }
-            queryInt = 0; // обнуление
         }
 
         private void writeResponse(HttpExchange exchange,
@@ -403,9 +392,10 @@ public class HttpTaskServer {
             }
             exchange.close();
         }
-    }
 
-    private int getQueryInt(String query, int queryInt) {
+
+    private int getQueryInt(String query) {
+        int queryInt = 0;
         if (query != null) {
             String[] queryParts = query.split("id=");
             queryInt = Integer.parseInt(queryParts[1]);

@@ -97,27 +97,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Collection<Task> getAllTasks() {
-        if (tasks.isEmpty()) {
-            return null;
-        }
         return new ArrayList<>(tasks.values());
     }
 
     @Override
     public Collection<Epic> getAllEpics() {
-
-        if (epics.isEmpty()) {
-            return null;
-        }
         return new ArrayList<>(epics.values());
     }
 
     @Override
     public Collection<Subtask> getAllSubtasks() {
-
-        if (subtasks.isEmpty()) {
-            return null;
-        }
         return new ArrayList<>(subtasks.values());
     }
 
