@@ -50,17 +50,16 @@ public class HttpTaskManager extends FileBackedTasksManager {
         Type historyType = new TypeToken<List<Task>>() {}.getType();
         List<Task> historyList = gson.fromJson(gsonHistory, historyType);
         for (Task task : historyList) {
-            if (task.getTaskId() > counterId) {
-                counterId = task.getTaskId();
-            }
             historyManager.add(task);
         }
-        setId(counterId);
 
         String jsonTasks = client.load("tasks/task");
         Type taskType = new TypeToken<List<Task>>() {}.getType();
         List<Task> taskList = gson.fromJson(jsonTasks, taskType);
         for (Task task : taskList) {
+            if (task.getTaskId() > counterId) {
+                counterId = task.getTaskId();
+            }
             tasks.put(task.getTaskId(), task);
         }
 
@@ -68,6 +67,9 @@ public class HttpTaskManager extends FileBackedTasksManager {
         Type epicType = new TypeToken<List<Epic>>() {}.getType();
         List<Epic> epicList = gson.fromJson(jsonEpics, epicType);
         for (Epic epic : epicList) {
+            if (epic.getTaskId() > counterId) {
+                counterId = epic.getTaskId();
+            }
             epics.put(epic.getTaskId(), epic);
         }
 
@@ -75,7 +77,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
         Type subtaskType = new TypeToken<List<Subtask>>() {}.getType();
         List<Subtask> subtasksList = gson.fromJson(jsonSubtasks, subtaskType);
         for (Subtask subtask : subtasksList) {
+            if (subtask.getTaskId() > counterId) {
+                counterId = subtask.getTaskId();
+            }
             subtasks.put(subtask.getTaskId(), subtask);
         }
+        setId(counterId);
     }
 }
